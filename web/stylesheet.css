@@ -1,0 +1,84 @@
+body{
+    background-color: #e4edec;
+    margin: 0px;
+    font-size: 16px;
+    font-family: "Times New Roman";
+}
+
+#header{
+    background-color: #2b4854;
+    margin: 0px;
+    height: 80px;
+}
+
+#header-container{
+    background-color: #537b89;
+    margin: 0px;
+    height: 80px;
+}
+#navigation{
+    width: 900px;
+    margin: 0 auto;
+    height: 80px;
+}
+#navigation #logo-div{
+    margin: 0px;
+    height: 40px;
+    display: inline;
+}
+
+#navigation #navdiv{
+    margin: 0px;
+    height: 40px;
+    width: 900px;
+}
+
+h2{
+    font-size: 40px;
+    display: inline;
+}
+#navigation .navbar{
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    display: inline;
+}
+#logbar .navbar {
+    float: right;
+    width: 100px;
+    margin-left: 200px;
+/*    HOW?????????????*/
+}
+#navigation .navbar li{
+    display:inline;
+    padding: 5px;
+}
+#navigation .navbar li a{
+    text-decoration: none;
+    font-size: 20px;
+    color: #ffffff;
+}
+#navigation .navbar li a:hover{
+    color: #000000;
+}
+
+.main{
+    background-color: #f0f9f8;
+    padding: 20px;
+    width: 900px;
+    margin: 0 auto;
+}
+
+#resultTable {margin: 0 auto; width: 900px}
+#resultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
+#resultTable tr:nth-child(even) {background: #fff; padding: 0px}
+
+#popupbox{
+    visibility: hidden;
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+}
+h1{
+    text-align: center;
+}
