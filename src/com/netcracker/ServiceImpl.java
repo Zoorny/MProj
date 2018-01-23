@@ -35,4 +35,6 @@ public class ServiceImpl implements Service {
     public List<Album> getAlbums() {
         return oracleDAO.getAlbums();
     }
+
+
 }

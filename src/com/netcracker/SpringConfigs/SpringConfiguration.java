@@ -1,4 +1,4 @@
-package com.netcracker;
+package com.netcracker.SpringConfigs;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

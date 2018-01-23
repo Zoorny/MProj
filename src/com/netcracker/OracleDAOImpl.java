@@ -28,19 +28,19 @@ public class OracleDAOImpl implements OracleDAO {
 
 
     public void addArtist(Artist artist) {
-        String sql = "insert into \"artists\" (\"artist_id\", \"artist_name\", \"artist_desc\") values (?,?,?)";
+        String sql = "insert into artistss (artist_id, artist_name, artist_desc) values (?,?,?)";
         jdbcTemplate.update(sql, new Object[]{artist.getId(), artist.getName(), artist.getDescription()});
     }
 
     public Artist getArtistById(int id) {
-        String sql = "select * from \"artists\" where \"artist_id\" = :id";
+        String sql = "select * from artistss where artist_id = :id";
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("id", id);
         return namedParameterJdbcTemplate.query(sql, namedParams, new ArtistMapper()).get(0);
     }
 
     public List<Artist> getAllArtists(){
-        String sql = "SELECT * FROM \"artists\"";
+        String sql = "SELECT * FROM artists";
         return namedParameterJdbcTemplate.query(sql, new ArtistMapper());
     }
 
@@ -50,14 +50,14 @@ public class OracleDAOImpl implements OracleDAO {
     }
 
     public List<Album> getAlbums(){
-        String sql = "SELECT \"album_id\",\"artist_name\",\"album_title\",album_year,\"album_desc\" FROM " +
-                "\"albums\", \"artists\" WHERE \"albums\".\"artist_id\" = \"artists\".\"artist_id\"";
+        String sql = "SELECT album_id,artist_name,album_title,album_year,album_desc FROM " +
+                "albums, artists WHERE albums.artist_id = artists.artist_id";
 
         return namedParameterJdbcTemplate.query(sql, new AlbumMapper());
     }
 
     public Album getAlbumById(int id) {
-        String sql = "select * from \"artists\" where \"artist_id\" = :id";
+        String sql = "select * from ALBUMS where ALBUM_ID = :id";
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("id", id);
         return namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper()).get(0);

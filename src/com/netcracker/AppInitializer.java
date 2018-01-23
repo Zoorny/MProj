@@ -1,5 +1,6 @@
 package com.netcracker;
 
+import com.netcracker.SpringConfigs.SpringConfiguration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer{

@@ -1,6 +1,6 @@
 package com.netcracker;
 
-import com.netcracker.Objects.Artist;
+import com.netcracker.SpringConfigs.SpringJDBCConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {

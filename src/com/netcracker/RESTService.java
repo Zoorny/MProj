@@ -62,7 +62,6 @@ public class RESTService {
             return new ResponseEntity<List<Album>>(HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<List<Album>>(albums, HttpStatus.OK);
-
     }
 
 
