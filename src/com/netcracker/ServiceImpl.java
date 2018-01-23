@@ -1,5 +1,6 @@
 package com.netcracker;
 
+import com.netcracker.Objects.Album;
 import com.netcracker.Objects.Artist;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,5 +26,13 @@ public class ServiceImpl implements Service {
 
     public void deleteArtistById(int id) {
         oracleDAO.deleteArtistById(id);
+    }
+
+    public Album getAlbumById(int id) {
+        return oracleDAO.getAlbumById(id);
+    }
+
+    public List<Album> getAlbums() {
+        return oracleDAO.getAlbums();
     }
 }

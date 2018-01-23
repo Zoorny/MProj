@@ -1,6 +1,8 @@
 package com.netcracker;
 
+import com.netcracker.Mappers.AlbumMapper;
 import com.netcracker.Mappers.ArtistMapper;
+import com.netcracker.Objects.Album;
 import com.netcracker.Objects.Artist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,4 +48,22 @@ public class OracleDAOImpl implements OracleDAO {
         String sql = "delete from artists where artist_id = ?";
         jdbcTemplate.update(sql, new Object[]{id});
     }
+
+    public List<Album> getAlbums(){
+        String sql = "SELECT \"album_id\",\"artist_name\",\"album_title\",album_year,\"album_desc\" FROM " +
+                "\"albums\", \"artists\" WHERE \"albums\".\"artist_id\" = \"artists\".\"artist_id\"";
+
+        return namedParameterJdbcTemplate.query(sql, new AlbumMapper());
+    }
+
+    public Album getAlbumById(int id) {
+        String sql = "select * from \"artists\" where \"artist_id\" = :id";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("id", id);
+        return namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper()).get(0);
+    }
+
+
+
+
 }

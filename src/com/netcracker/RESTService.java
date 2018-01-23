@@ -1,5 +1,6 @@
 package com.netcracker;
 
+import com.netcracker.Objects.Album;
 import com.netcracker.Objects.Artist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,5 +52,18 @@ public class RESTService {
         return new ResponseEntity<Artist>(HttpStatus.NO_CONTENT);
 
     }
+
+    @GetMapping(value = "/album",produces ="application/json" )
+    public ResponseEntity<List<Album>> getAlbums(){
+
+        List<Album> albums = service.getAlbums();
+
+        if (albums.isEmpty())
+            return new ResponseEntity<List<Album>>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<List<Album>>(albums, HttpStatus.OK);
+
+    }
+
 
 }

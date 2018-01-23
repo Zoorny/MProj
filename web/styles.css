@@ -1,16 +1,56 @@
-.artistTable tr:nth-child(odd) {background: #def}
+
+.topContainer{
+    background: #abc787;
+}
+.logo-name-container{
+    text-align: center;
+}
+.logo-img{
+    display: inline-block;
+}
+.logo-name{
+    font: 20pt "Times New Roman";
+    color: #484b52;
+    display: inline-block;
+}
+.ref {
+
+    width: 1000px;
+    margin: auto;
+}
+.a, .ref {
+    font: 14pt "Times New Roman";
+    color: #484b52;
+}
+
+.artistTable tr:nth-child(odd) {background: #69c5ce; border-color: #69c5ce}
 .artistTable tr:nth-child(even) {background: #fff}
 
-.headLabel{text-align:center}
+.headLabel{text-align:center;}
+
+.inputContainer{
+    width: 200px;
+    margin: auto;
+}
 
 .artistTable {
     margin-left:auto;
     margin-right:auto;
 }
 
-.inputContainer {
-    margin: auto;
+#popupbox{
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
     width: 20%;
-    border: 3px solid green;
-    padding: 10px;
+    height: 150px;
+    position: absolute;
+    background: #FBFBF0;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
 }
+

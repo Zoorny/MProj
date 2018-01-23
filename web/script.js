@@ -22,16 +22,15 @@ function createXmlHttpRequestObject() {
         return xmlHttp;
 }
 
-function getArtist() {
+function getNew() {
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
-        var id = encodeURIComponent(document.getElementById("artistId").value);
         clearTable();
-        xmlHttp.open("GET", "rest/artist/"+id, true);
+        xmlHttp.open("GET", "rest/album/", true);
         xmlHttp.onreadystatechange  = handleServerResponse();
         xmlHttp.send(null);
     }else {
-        setTimeout('getArtist()',1000);
+        setTimeout('getNew()',1000);
     }
 }
 
@@ -41,7 +40,6 @@ function handleServerResponse() {
     if (xmlHttp.readyState == 4) {
         if (xmlHttp.status == 200) {
             var resp = JSON.parse(xmlHttp.responseText);
-            console.log(resp.length);
 
             if (!isNaN(resp.length))for (var i = 0; i < resp.length; i++) {
                 var table = document.getElementById("resultTable");
@@ -49,32 +47,30 @@ function handleServerResponse() {
                 var tdelem1 = document.createElement('td');
                 var tdelem2 = document.createElement('td');
                 var tdelem3 = document.createElement('td');
-                tdelem1.innerHTML = resp[i].id;
-                tdelem2.innerHTML = resp[i].name;
-                tdelem3.innerHTML = resp[i].description;
+                var tdelem4 = document.createElement('td');
+                var tdelem5 = document.createElement('td');
+                var image = document.createElement('img');
+                image.src = "images/" + resp[i].id +".jpg";
+                image.width = 200;
+                image.heigh = 200;
+                tdelem1.innerHTML = resp[i].artistName;
+                tdelem2.innerHTML = resp[i].title;
+                tdelem3.innerHTML = resp[i].year;
+                tdelem4.innerHTML = resp[i].description;
+                tdelem5.appendChild(image);
 
                 trelem.appendChild(tdelem1);
                 trelem.appendChild(tdelem2);
                 trelem.appendChild(tdelem3);
+                trelem.appendChild(tdelem4);
+                trelem.appendChild(tdelem5);
                 table.appendChild(trelem);
 
             }else {
-                var table = document.getElementById("resultTable");
-                var trelem = document.createElement('tr');
-                var tdelem1 = document.createElement('td');
-                var tdelem2 = document.createElement('td');
-                var tdelem3 = document.createElement('td');
-                tdelem1.innerHTML = resp.id;
-                tdelem2.innerHTML = resp.name;
-                tdelem3.innerHTML = resp.description;
-
-                trelem.appendChild(tdelem1);
-                trelem.appendChild(tdelem2);
-                trelem.appendChild(tdelem3);
-                table.appendChild(trelem);
+                fillTable(resp);
             }
         }
-    }else setTimeout('handleServerResponse()',100);
+    }else setTimeout('handleServerResponse()',1000);
 }
 
 
@@ -86,12 +82,18 @@ function initTable() {
     var tdelem1 = document.createElement('th');
     var tdelem2 = document.createElement('th');
     var tdelem3 = document.createElement('th');
-    tdelem1.innerHTML = 'id';
-    tdelem2.innerHTML = 'name';
-    tdelem3.innerHTML = 'description';
+    var tdelem4 = document.createElement('th');
+    var tdelem5 = document.createElement('th');
+    tdelem1.innerHTML = 'artistName';
+    tdelem2.innerHTML = 'title';
+    tdelem3.innerHTML = 'year';
+    tdelem4.innerHTML = 'description';
+    tdelem5.innerHTML = 'img';
     trelem.appendChild(tdelem1);
     trelem.appendChild(tdelem2);
     trelem.appendChild(tdelem3);
+    trelem.appendChild(tdelem4);
+    trelem.appendChild(tdelem5);
     table.appendChild(trelem);
 
 }
@@ -102,6 +104,28 @@ function clearTable() {
         table.removeChild(table.firstChild);
     }
     initTable();
+}
+
+function fillTable(resp) {
+    var table = document.getElementById("resultTable");
+    var trelem = document.createElement('tr');
+    var tdelem1 = document.createElement('td');
+    var tdelem2 = document.createElement('td');
+    var tdelem3 = document.createElement('td');
+    var tdelem4 = document.createElement('td');
+    var tdelem5 = document.createElement('td');
+    tdelem1.innerHTML = resp.artistName;
+    tdelem2.innerHTML = resp.title;
+    tdelem3.innerHTML = resp.year;
+    tdelem4.innerHTML = resp.description;
+    tdelem5.innerHTML = resp.description;
+
+    trelem.appendChild(tdelem1);
+    trelem.appendChild(tdelem2);
+    trelem.appendChild(tdelem3);
+    trelem.appendChild(tdelem4);
+    trelem.appendChild(tdelem5);
+    table.appendChild(trelem);
 }
 
 

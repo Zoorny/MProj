@@ -10,13 +10,12 @@ public class Main {
 
         OracleDAO oracleDAO = context.getBean(OracleDAO.class);
 
-        Artist artist = new Artist();
+/*        Artist artist = new Artist();
         artist.setId(3);
         artist.setName("Jon");
-        artist.setDescription("The first and only one");
+        artist.setDescription("The first and only one");*/
 
-        System.out.println(oracleDAO.getAllArtists());
-        oracleDAO.addArtist(artist);
+        System.out.println(oracleDAO.getAlbums());
         oracleDAO.getArtistById(1);
 
     }
