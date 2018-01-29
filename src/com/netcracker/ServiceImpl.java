@@ -2,6 +2,7 @@ package com.netcracker;
 
 import com.netcracker.Objects.Album;
 import com.netcracker.Objects.Artist;
+import com.netcracker.Objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -34,6 +35,14 @@ public class ServiceImpl implements Service {
 
     public List<Album> getAlbums() {
         return oracleDAO.getAlbums();
+    }
+
+    public void saveUser(User user) {
+        oracleDAO.saveUser(user);
+    }
+
+    public User findUserByUsername(String username) {
+        return oracleDAO.findUserByUsername(username);
     }
 
 

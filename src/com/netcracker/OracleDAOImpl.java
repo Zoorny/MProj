@@ -2,8 +2,10 @@ package com.netcracker;
 
 import com.netcracker.Mappers.AlbumMapper;
 import com.netcracker.Mappers.ArtistMapper;
+import com.netcracker.Mappers.UserMapper;
 import com.netcracker.Objects.Album;
 import com.netcracker.Objects.Artist;
+import com.netcracker.Objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,12 +30,12 @@ public class OracleDAOImpl implements OracleDAO {
 
 
     public void addArtist(Artist artist) {
-        String sql = "insert into artistss (artist_id, artist_name, artist_desc) values (?,?,?)";
+        String sql = "insert into ARTISTS (artist_id, artist_name, artist_desc) values (?,?,?)";
         jdbcTemplate.update(sql, new Object[]{artist.getId(), artist.getName(), artist.getDescription()});
     }
 
     public Artist getArtistById(int id) {
-        String sql = "select * from artistss where artist_id = :id";
+        String sql = "select * from ARTISTS where artist_id = :id";
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("id", id);
         return namedParameterJdbcTemplate.query(sql, namedParams, new ArtistMapper()).get(0);
@@ -61,6 +63,18 @@ public class OracleDAOImpl implements OracleDAO {
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("id", id);
         return namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper()).get(0);
+    }
+
+    public void saveUser(User user) {
+        String sql = "insert into USERS (USER_ID, LOGIN, PASSWORD, NICKNAME, EMAIL, ROLE) values (?,?,?,?,?,?)";
+        jdbcTemplate.update(sql, new Object[]{user.getId(), user.getLogin(), user.getPassword(), user.getNickname(), user.getEmail(), user.getRole()});
+    }
+
+    public User findUserByUsername(String username) {
+        String sql = "select * from USERS where LOGIN = :username";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("username", username);
+        return namedParameterJdbcTemplate.query(sql, namedParams, new UserMapper()).get(0);
     }
 
 

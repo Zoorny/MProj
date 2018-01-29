@@ -128,6 +128,40 @@ function fillTable(resp) {
     table.appendChild(trelem);
 }
 
+function auth_user() {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        console.log(username);
+        console.log(password);
+
+        xmlHttp.open("GET", "rest/login/", true);
+        xmlHttp.withCredentials = true;
+        xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+        //xmlHttp.setRequestHeader("Authorization", "Basic " + (username + ":" + password));
+        xmlHttp.onreadystatechange  = ok();
+        xmlHttp.send();
+    }
+}
+
+/*var xhr = new XMLHttpRequest();
+xhr.open("GET", "https://www.example.org/protected-data.php", true);
+xhr.withCredentials = true;
+xhr.setRequestHeader("Authorization", 'Basic ' + btoa('myuser:mypswd'));
+xhr.onload = function () {
+    console.log(xhr.responseText);
+};
+xhr.send();*/
+
+function ok() {
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 200) {
+            var resp = JSON.parse(xmlHttp.responseText);
+            document.getElementById("login-button").innerText = "Ez";
+        }
+    }else setTimeout('ok()',1000);
+}
 
 
 

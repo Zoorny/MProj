@@ -2,6 +2,7 @@ package com.netcracker;
 
 import com.netcracker.Objects.Album;
 import com.netcracker.Objects.Artist;
+import com.netcracker.Objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,6 @@ public class RESTService {
 
     }
 
-
     @PostMapping(value = "/artist",consumes = "application/json")
     public ResponseEntity<Artist> addArtist(@RequestBody Artist artist){
         service.addArtist(artist);
@@ -63,6 +63,9 @@ public class RESTService {
 
         return new ResponseEntity<List<Album>>(albums, HttpStatus.OK);
     }
+
+
+
 
 
 }
