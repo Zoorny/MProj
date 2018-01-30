@@ -6,7 +6,7 @@
     <link href="stylesheet.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="script.js"></script>
 </head>
-<body onload="initTable(), getNew()">
+<body onload="initTable(), homeScript()">
 
 <div id="header"></div>
 
@@ -19,13 +19,13 @@
         <div class="navdiv">
             <ul class="navbar">
                 <li><a href="/index.jsp">Home</a></li>
-                <li><a href="/recommendations.html">Recommendations</a></li>
+                <li><a onclick="initTable(), recommendationsScript()">Recommendations</a></li>
                 <li><a href="/profile.html">Profile</a></li>
                 <li><a href="/rest/advanced-search">Advanced Search</a></li>
             </ul>
             <ul class="navbar" id="logbar">
-                <li><a href="/rest/sign-up">Sign up</a></li>
-                <li><a id="login-button" href="/login">Log in</a></li>
+                <li><a id="sign-up" href="/rest/sign-up">Sign up</a></li>
+                <li><a id="login-button" onclick="loginShow('show')">Log in</a></li>
             </ul>
         </div>
 
@@ -33,24 +33,25 @@
 </div>
 
 <div class="main">
-    <h1>New Releases</h1>
-    <table id="resultTable"></table>
-<%--    <div id="popupbox">
-        <form name="login" action="" method="post">
-            <fieldset>
-                <label for="username">Username:</label>
-                <input type="text" name="username" id="username" size="14" />
-                <br/>
-                <label for="password">Password:</label>
-                <input name="password" type="password" id="password" size="14" />
-                <div>
-                    <input type="button" name="login" value="login" onclick="auth_user()"/>
-                    <input type="button" name="close" value="close" onclick="loginScript('hide')"/>
-                </div>
-            </fieldset>
-        </form>
-    </div>--%>
+    <h1 id="headerLine">New Releases</h1>
+    <div id="resultTableDiv">
+        <table id="resultTable"></table>
+    </div>
+
+    <form name='f' id="login-form" action='/login' method='POST'>
+        <label>Log in</label><br/>
+        <table>
+            <tr><td>User:</td><td><input type='text' name='username'></td></tr>
+            <tr><td>Password:</td><td><input type='password' name='password'/></td></tr>
+        </table>
+        <input name="submit" type="submit" value="Log in" onsubmit="loginShow('hide')"/>
+        <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
+    </form>
+
 </div>
+
+
+
 
 </body>
 </html>

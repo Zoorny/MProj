@@ -69,16 +69,17 @@ h2{
     margin: 0 auto;
 }
 
-#resultTable {margin: 0 auto; width: 900px}
-#resultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
-#resultTable tr:nth-child(even) {background: #fff; padding: 0px}
-
-#popupbox{
-    visibility: hidden;
+#login-form {
+    display: none;
     width: 300px;
     margin: 0 auto;
     text-align: center;
 }
+
+#resultTable {margin: 0 auto; width: 900px}
+#resultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
+#resultTable tr:nth-child(even) {background: #fff; padding: 0px}
+
 h1{
     text-align: center;
 }
