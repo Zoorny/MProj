@@ -4,9 +4,9 @@
     <root id="1"/>
     <schema id="2" parent="1" name="MPROJ_USER">
       <ObjectId>49</ObjectId>
-      <IntrospectionTimestamp>2018-01-24.19:26:06</IntrospectionTimestamp>
+      <IntrospectionTimestamp>2018-01-31.00:06:43</IntrospectionTimestamp>
       <CreatedTimestamp>2018-01-19.17:17:56</CreatedTimestamp>
-      <ModifiedTimestamp>2018-01-24.19:26:05</ModifiedTimestamp>
+      <ModifiedTimestamp>2018-01-31.00:06:42</ModifiedTimestamp>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -133,7 +133,7 @@
     <table id="31" parent="2" name="USERS">
       <ObjectId>21876</ObjectId>
       <CreatedTimestamp>2018-01-19.17:17:56</CreatedTimestamp>
-      <ModifiedTimestamp>2018-01-24.19:26:05</ModifiedTimestamp>
+      <ModifiedTimestamp>2018-01-31.00:06:42</ModifiedTimestamp>
       <TemporaryPreserve>1</TemporaryPreserve>
     </table>
     <column id="32" parent="22" name="ARTIST_ID">
@@ -457,7 +457,12 @@
       <Position>6</Position>
       <DataType>VARCHAR2(100)|0</DataType>
     </column>
-    <index id="90" parent="31" name="USERS_PK">
+    <column id="90" parent="31" name="ENABLED">
+      <Position>7</Position>
+      <DataType>VARCHAR2(100)|0</DataType>
+      <DefaultExpression>NULL</DefaultExpression>
+    </column>
+    <index id="91" parent="31" name="USERS_PK">
       <ObjectId>21877</ObjectId>
       <CreatedTimestamp>2018-01-19.17:17:56</CreatedTimestamp>
       <ModifiedTimestamp>2018-01-19.17:17:56</ModifiedTimestamp>
@@ -465,14 +470,14 @@
       <ColNames>user_id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="91" parent="31" name="USERS_PK">
+    <key id="92" parent="31" name="USERS_PK">
       <ModifiedTimestamp>2018-01-19.17:17:56</ModifiedTimestamp>
       <ColNames>USER_ID</ColNames>
       <InitiallyDeferred>1</InitiallyDeferred>
       <UnderlyingIndexName>USERS_PK</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <trigger id="92" parent="31" name="USERS_ID_TRG">
+    <trigger id="93" parent="31" name="USERS_ID_TRG">
       <ObjectId>22174</ObjectId>
       <CreatedTimestamp>2018-01-24.15:35:36</CreatedTimestamp>
       <ModifiedTimestamp>2018-01-24.15:35:36</ModifiedTimestamp>

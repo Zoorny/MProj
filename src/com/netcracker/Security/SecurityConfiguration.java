@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import javax.sql.DataSource;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -20,14 +22,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
 	@Autowired
-    Service service;
+	CustomLogoutSuccessHandler customLogoutSuccessHandler;
+
+	@Autowired
+	DataSource dataSource;
 
 	private static String REALM="REALM";
 	
-	@Autowired
+/*	@Autowired
 	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication().withUser("bill").password("abc123").roles("ADMIN", "USER");
 		auth.inMemoryAuthentication().withUser("tom").password("abc123").roles("USER");
+	}*/
+
+	@Autowired
+	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+		auth.jdbcAuthentication().dataSource(dataSource)
+				.usersByUsernameQuery("select LOGIN, PASSWORD, ENABLED from USERS where LOGIN=?")
+				.authoritiesByUsernameQuery("select LOGIN, ROLE from USERS where LOGIN=?");
 	}
 	
 	@Override
@@ -42,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll().successHandler(customAuthenticationSuccessHandler)
                 //.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic()
-				.and().logout();;
+				.and().logout().logoutSuccessHandler(customLogoutSuccessHandler);
  	}
 	//.loginPage("/login.html") .failureUrl("/login-failure.html") .usernameParameter("username").passwordParameter("password")
 /*	@Bean

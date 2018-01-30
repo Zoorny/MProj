@@ -48,6 +48,10 @@
         <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
     </form>
 
+    <form action="/logout" method="POST">
+        <input type="submit" value="Sign Out"/>
+    </form>
+
 </div>
 
 
