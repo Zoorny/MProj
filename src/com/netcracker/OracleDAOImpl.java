@@ -65,13 +65,15 @@ public class OracleDAOImpl implements OracleDAO {
         return namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper()).get(0);
     }
 
-    public void saveUser(User user) {
-        String sql = "insert into USERS (USER_ID, LOGIN, PASSWORD, NICKNAME, EMAIL, ROLE) values (?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, new Object[]{user.getId(), user.getLogin(), user.getPassword(), user.getNickname(), user.getEmail(), user.getRole()});
+    public void createUser(User user) {
+        String sql = "insert into USERS (USERNAME, PASSWORD, EMAIL, ENABLED) values (?,?,?,?)";
+        String sql2 = "insert into USER_ROLES (USERNAME, ROLE) values (?,?)";
+        jdbcTemplate.update(sql, new Object[]{user.getUsername(), user.getPassword(), user.getEmail(), "true"});
+        jdbcTemplate.update(sql2, new Object[]{user.getUsername(), "ROLE_USER"});
     }
 
     public User findUserByUsername(String username) {
-        String sql = "select * from USERS where LOGIN = :username";
+        String sql = "select * from USERS where USERNAME = :username";
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("username", username);
         return namedParameterJdbcTemplate.query(sql, namedParams, new UserMapper()).get(0);

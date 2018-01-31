@@ -25,7 +25,8 @@ public class CustomAuthenticationSuccessHandler  implements AuthenticationSucces
             throws IOException, ServletException {
         //set our response to OK status
         response.setStatus(HttpServletResponse.SC_OK);
-
+        response.setContentType("text/plain");
+        response.getWriter().write("Logged In!");
         boolean admin = false;
 
         for (GrantedAuthority auth : authentication.getAuthorities()) {
@@ -36,8 +37,6 @@ public class CustomAuthenticationSuccessHandler  implements AuthenticationSucces
 
         if(admin){
             response.sendRedirect("/admin.html");
-        }else{
-            response.sendRedirect("/index.jsp");
         }
     }
 }

@@ -16,7 +16,7 @@ public interface Service {
     Album getAlbumById(int id);
     List<Album> getAlbums();
 
-    void saveUser(User user);
+    void createUser(User user);
     User findUserByUsername(String username);
 
 }

@@ -64,6 +64,19 @@ public class RESTService {
         return new ResponseEntity<List<Album>>(albums, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/register",consumes = "application/json")
+    public ResponseEntity<String> createUser(@RequestBody User user){
+        service.createUser(user);
+        return new ResponseEntity<String>("User created", HttpStatus.CREATED);
+    }
+
+/*    @RequestMapping(value = "/failure")
+    public ResponseEntity<String> loginFailure(){
+
+
+        return new ResponseEntity<String>("failure", HttpStatus.UNAUTHORIZED);
+    }*/
+
 
 
 

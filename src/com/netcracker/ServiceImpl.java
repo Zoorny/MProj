@@ -37,8 +37,8 @@ public class ServiceImpl implements Service {
         return oracleDAO.getAlbums();
     }
 
-    public void saveUser(User user) {
-        oracleDAO.saveUser(user);
+    public void createUser(User user) {
+        oracleDAO.createUser(user);
     }
 
     public User findUserByUsername(String username) {

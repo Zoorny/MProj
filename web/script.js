@@ -21,7 +21,7 @@ function createXmlHttpRequestObject() {
     }else
         return xmlHttp;
 }
-
+var url = "http://localhost:8081/"
 /*if ((document.getElementById("username") != null) &&(document.getElementById("password") != null)){
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
@@ -32,7 +32,7 @@ function createXmlHttpRequestObject() {
 function homeScript() {
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
-        clearTable();
+
         xmlHttp.open("GET", "rest/album/", true);
         //xmlHttp.setRequestHeader(requestHeaderAuth);
         xmlHttp.onreadystatechange  = homeServerResponse();
@@ -46,9 +46,13 @@ function homeServerResponse() {
     if (xmlHttp.readyState == 4) {
         if (xmlHttp.status == 200) {
             var resp = JSON.parse(xmlHttp.responseText);
+            clearTable();
             hideElements();
             document.getElementById("resultTableDiv").style.display = 'inline';
             document.getElementById("headerLine").style.display = 'inline';
+            document.getElementById("headerLine").innerHTML = "New Releases";
+
+
 
             if (!isNaN(resp.length))for (var i = 0; i < resp.length; i++) {
                 var table = document.getElementById("resultTable");
@@ -62,6 +66,7 @@ function homeServerResponse() {
                 image.src = "images/" + resp[i].id +".jpg";
                 image.width = 200;
                 image.heigh = 200;
+
                 tdelem1.innerHTML = resp[i].artistName;
                 tdelem2.innerHTML = resp[i].title;
                 tdelem3.innerHTML = resp[i].year;
@@ -85,7 +90,6 @@ function homeServerResponse() {
 function recommendationsScript() {
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
-        clearTable();
         xmlHttp.open("GET", "rest/album/", true);
         //xmlHttp.setRequestHeader(requestHeaderAuth);
         xmlHttp.onreadystatechange  = recommendationsResponse();
@@ -99,6 +103,7 @@ function recommendationsResponse() {
     if (xmlHttp.readyState == 4) {
         if (xmlHttp.status == 200) {
             hideElements();
+            clearTable();
             document.getElementById("headerLine").innerHTML = "Recommendations";
             document.getElementById("headerLine").style.display = 'inline';
             document.getElementById("resultTableDiv").style.display = 'inline';
@@ -137,45 +142,49 @@ function recommendationsResponse() {
     }else setTimeout('recommendationsResponse()',1000);
 }
 
+function signUp() {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var email = document.getElementById("email").value;
+
+        xmlHttp.open("POST", "rest/register/", true);
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+        xmlHttp.onreadystatechange  = signUpResponse();
+        var data = JSON.stringify({"username": username, "password": password, "email": email});
+        xmlHttp.send(data);
+    }else {
+        setTimeout('signUp()',1000);
+    }
+
+}
+function signUpResponse(){}
+
+
 function profileScript() {
     
 }
 
-function signUp(){
+function signUpShow(showhide) {
+    if(showhide== 'show'){
+        hideElements();
+        document.getElementById("headerLine").style.display = 'inline';
+        document.getElementById("headerLine").innerHTML = "Sign Up";
+        document.getElementById("sign-up-form").style.display = 'block';
+    }
 
+    else {
+        document.getElementById("sign-up-form").style.display = 'none';
+    }
 }
 
-function initTable() {
-
-    var table = document.getElementById("resultTable");
-    document.getElementById("resultTableDiv").style.display = 'inline';
-    document.getElementById("headerLine").style.display = 'inline';
-    var trelem = document.createElement('tr');
-    var tdelem1 = document.createElement('th');
-    var tdelem2 = document.createElement('th');
-    var tdelem3 = document.createElement('th');
-    var tdelem4 = document.createElement('th');
-    var tdelem5 = document.createElement('th');
-    tdelem1.innerHTML = 'artistName';
-    tdelem2.innerHTML = 'title';
-    tdelem3.innerHTML = 'year';
-    tdelem4.innerHTML = 'description';
-    tdelem5.innerHTML = 'img';
-    trelem.appendChild(tdelem1);
-    trelem.appendChild(tdelem2);
-    trelem.appendChild(tdelem3);
-    trelem.appendChild(tdelem4);
-    trelem.appendChild(tdelem5);
-    table.appendChild(trelem);
-
-}
 function clearTable() {
     var table = document.getElementById("resultTable");
-    while(table.hasChildNodes())
+    while(table.hasChildNodes() && table.rows.length >1)
     {
-        table.removeChild(table.firstChild);
+        table.removeChild(table.lastChild);
     }
-    initTable();
 }
 
 function fillTable(resp) {
@@ -203,14 +212,17 @@ function fillTable(resp) {
 function loginShow(showhide) {
     if(showhide== 'show'){
         hideElements();
+        document.getElementById("headerLine").style.display = 'inline';
+        document.getElementById("headerLine").innerHTML = "Log In";
         document.getElementById("login-form").style.display = 'block';
-        document.getElementById("login-button").innerText = "Log in";
     }
 
     else {
         document.getElementById("login-form").style.display = 'none';
     }
 }
+
+
 
 //For later
 function validate() {
@@ -226,21 +238,48 @@ function hideElements() {
     document.getElementById("login-form").style.display = 'none';
     document.getElementById("resultTableDiv").style.display = 'none';
     document.getElementById("headerLine").style.display = 'none';
+    document.getElementById("sign-up-form").style.display = 'none';
+    document.getElementById("login-message").style.display = 'none';
 }
 
-/*function auth_user() {
+function auth_user() {
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
-        var username = document.getElementById("username").value;
-        var password = document.getElementById("password").value;
-
-        xmlHttp.open("GET", "rest/login/", true);
-        xmlHttp.withCredentials = true;
-        xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+        var username = document.getElementById("loginUsername").value;
+        var password = document.getElementById("loginPassword").value;
+        console.log(username);
+        console.log(password);
+        var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+        xmlHttp.open("POST", url + "login", true);
+        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        //xmlHttp.withCredentials = true;
+        //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
         xmlHttp.onreadystatechange  = ok();
-        xmlHttp.send();
+        xmlHttp.send(body);
     }
-}*/
+    else setTimeout('auth_user()',1000);
+}
+function ok() {
+    var text = document.getElementById("login-message");
+    var regButton = document.getElementById("sign-up");
+    var logButton = document.getElementById("login-button");
+    if(xmlHttp.status == 200){
+        text.innerHTML = xmlHttp.responseText;
+        text.style.display = "block";
+        regButton.innerHTML = "Username";
+        regButton.setAttribute("onclick", "");
+        logButton.innerHTML = "Log out";
+        logButton.setAttribute("onclick", "")
+
+    }
+
+    else if(xmlHttp.status == 401){
+        text.innerHTML = xmlHttp.responseText;
+        text.style.display = "block";
+    }
+
+    else setTimeout('ok()',1000);
+}
 
 
 

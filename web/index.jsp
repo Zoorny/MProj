@@ -6,7 +6,7 @@
     <link href="stylesheet.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="script.js"></script>
 </head>
-<body onload="initTable(), homeScript()">
+<body onload="homeScript()">
 
 <div id="header"></div>
 
@@ -18,13 +18,13 @@
         </div>
         <div class="navdiv">
             <ul class="navbar">
-                <li><a href="/index.jsp">Home</a></li>
-                <li><a onclick="initTable(), recommendationsScript()">Recommendations</a></li>
+                <li><a onclick="homeScript()">Home</a></li>
+                <li><a onclick="recommendationsScript()">Recommendations</a></li>
                 <li><a href="/profile.html">Profile</a></li>
                 <li><a href="/rest/advanced-search">Advanced Search</a></li>
             </ul>
             <ul class="navbar" id="logbar">
-                <li><a id="sign-up" href="/rest/sign-up">Sign up</a></li>
+                <li><a id="sign-up" onclick="signUpShow('show')">Sign up</a></li>
                 <li><a id="login-button" onclick="loginShow('show')">Log in</a></li>
             </ul>
         </div>
@@ -33,18 +33,26 @@
 </div>
 
 <div class="main">
-    <h1 id="headerLine">New Releases</h1>
+    <h1 id="headerLine"></h1>
     <div id="resultTableDiv">
-        <table id="resultTable"></table>
-    </div>
-
-    <form name='f' id="login-form" action='/login' method='POST'>
-        <label>Log in</label><br/>
-        <table>
-            <tr><td>User:</td><td><input type='text' name='username'></td></tr>
-            <tr><td>Password:</td><td><input type='password' name='password'/></td></tr>
+        <table id="resultTable">
+            <tr>
+                <td>artistName</td>
+                <td>title</td>
+                <td>year</td>
+                <td>description</td>
+                <td>img</td>
+            </tr>
         </table>
-        <input name="submit" type="submit" value="Log in" onsubmit="loginShow('hide')"/>
+    </div>
+    <p id="login-message"></p>
+
+    <form id="login-form" action='/login' method='POST'>
+        <table>
+            <tr><td>Username:</td><td><input type='text' id='loginUsername' required></td></tr>
+            <tr><td>Password:</td><td><input type='password' id='loginPassword' required/></td></tr>
+        </table>
+        <input name="submit" type="button" value="Log In" onclick="loginShow('hide'), auth_user()"/>
         <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
     </form>
 
@@ -52,9 +60,19 @@
         <input type="submit" value="Sign Out"/>
     </form>
 
+    <form id="sign-up-form">
+        <table>
+            <tr><td>Username:</td><td><input type='text' id='username'></td></tr>
+            <tr><td>E-mail:</td><td><input type='text' id='email'/></td></tr>
+            <tr><td>Confirm E-mail:</td><td><input type='text' id='confirmEmail'/></td></tr>
+            <tr><td>Password:</td><td><input type='password' id='password'/></td></tr>
+            <tr><td>Confirm Password:</td><td><input type='password' id='confirmPassword'/></td></tr>
+        </table>
+        <input name="submit" type="button" value="Sign Up" onclick="signUp(),loginShow('hide')"/>
+        <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
+    </form>
+
 </div>
-
-
 
 
 </body>

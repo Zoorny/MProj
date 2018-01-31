@@ -60,6 +60,7 @@ h2{
 }
 #navigation .navbar li a:hover{
     color: #000000;
+    cursor: pointer;
 }
 
 .main{
@@ -74,6 +75,16 @@ h2{
     width: 300px;
     margin: 0 auto;
     text-align: center;
+}
+#sign-up-form{
+    display: none;
+    width: 450px;
+    margin: 0 auto;
+    text-align: center;
+}
+#login-message{
+    display: none;
+    font-size: 20px;
 }
 
 #resultTable {margin: 0 auto; width: 900px}
