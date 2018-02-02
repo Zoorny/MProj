@@ -48,10 +48,7 @@ function homeServerResponse() {
             var resp = JSON.parse(xmlHttp.responseText);
             clearTable();
             hideElements();
-            document.getElementById("resultTableDiv").style.display = 'inline';
-            document.getElementById("headerLine").style.display = 'inline';
-            document.getElementById("headerLine").innerHTML = "New Releases";
-
+            document.getElementById("homeDiv").style.display = 'inline';
 
 
             if (!isNaN(resp.length))for (var i = 0; i < resp.length; i++) {
@@ -104,14 +101,12 @@ function recommendationsResponse() {
         if (xmlHttp.status == 200) {
             hideElements();
             clearTable();
-            document.getElementById("headerLine").innerHTML = "Recommendations";
-            document.getElementById("headerLine").style.display = 'inline';
-            document.getElementById("resultTableDiv").style.display = 'inline';
+            document.getElementById("recommendationsDiv").style.display = 'inline';
             var resp = JSON.parse(xmlHttp.responseText);
 
 
             if (!isNaN(resp.length))for (var i = 0; i < resp.length; i++) {
-                var table = document.getElementById("resultTable");
+                var table = document.getElementById("recommendationsResultTable");
                 var trelem = document.createElement('tr');
                 var tdelem1 = document.createElement('td');
                 var tdelem2 = document.createElement('td');
@@ -159,7 +154,13 @@ function signUp() {
     }
 
 }
-function signUpResponse(){}
+function signUpResponse(){
+}
+
+function advSearchScript() {
+    hideElements();
+    document.getElementById("advSearchDiv").style.display = 'block';
+}
 
 
 function profileScript() {
@@ -169,9 +170,7 @@ function profileScript() {
 function signUpShow(showhide) {
     if(showhide== 'show'){
         hideElements();
-        document.getElementById("headerLine").style.display = 'inline';
-        document.getElementById("headerLine").innerHTML = "Sign Up";
-        document.getElementById("sign-up-form").style.display = 'block';
+        document.getElementById("signUpDiv").style.display = 'inline';
     }
 
     else {
@@ -186,9 +185,16 @@ function clearTable() {
         table.removeChild(table.lastChild);
     }
 }
+function recommendationslearTable() {
+    var table = document.getElementById("resultTable");
+    while(table.hasChildNodes() && table.rows.length >1)
+    {
+        table.removeChild(table.lastChild);
+    }
+}
 
 function fillTable(resp) {
-    var table = document.getElementById("resultTable");
+    var table = document.getElementById("recommendationsResultTable");
     var trelem = document.createElement('tr');
     var tdelem1 = document.createElement('td');
     var tdelem2 = document.createElement('td');
@@ -212,9 +218,8 @@ function fillTable(resp) {
 function loginShow(showhide) {
     if(showhide== 'show'){
         hideElements();
-        document.getElementById("headerLine").style.display = 'inline';
-        document.getElementById("headerLine").innerHTML = "Log In";
-        document.getElementById("login-form").style.display = 'block';
+        document.getElementById("loginDiv").style.display = 'inline';
+
     }
 
     else {
@@ -235,11 +240,12 @@ function validate() {
 }
 
 function hideElements() {
-    document.getElementById("login-form").style.display = 'none';
-    document.getElementById("resultTableDiv").style.display = 'none';
-    document.getElementById("headerLine").style.display = 'none';
-    document.getElementById("sign-up-form").style.display = 'none';
-    document.getElementById("login-message").style.display = 'none';
+    document.getElementById("loginDiv").style.display = 'none';
+    document.getElementById("homeDiv").style.display = 'none';
+    document.getElementById("loginDiv").style.display = 'none';
+    document.getElementById("advSearchDiv").style.display = 'none';
+    document.getElementById("signUpDiv").style.display = 'none';
+    document.getElementById("recommendationsDiv").style.display = 'none';
 }
 
 function auth_user() {
@@ -264,6 +270,7 @@ function ok() {
     var regButton = document.getElementById("sign-up");
     var logButton = document.getElementById("login-button");
     if(xmlHttp.status == 200){
+        loginShow('hide');
         text.innerHTML = xmlHttp.responseText;
         text.style.display = "block";
         regButton.innerHTML = "Username";

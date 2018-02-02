@@ -12,16 +12,16 @@
 
 <div id="header-container">
     <div id="navigation">
-        <div id="logo-div">
+        <div id="logo-div" onclick="homeScript()">
             <img src="images/logo.png" width="40" height="40">
             <h2>Sitename</h2>
         </div>
         <div class="navdiv">
             <ul class="navbar">
                 <li><a onclick="homeScript()">Home</a></li>
-                <li><a onclick="recommendationsScript()">Recommendations</a></li>
+                <li><a href="/rest/recommendations" >Recommendations</a></li>
                 <li><a href="/profile.html">Profile</a></li>
-                <li><a href="/rest/advanced-search">Advanced Search</a></li>
+                <li><a onclick="advSearchScript()">Advanced Search</a></li>
             </ul>
             <ul class="navbar" id="logbar">
                 <li><a id="sign-up" onclick="signUpShow('show')">Sign up</a></li>
@@ -33,46 +33,316 @@
 </div>
 
 <div class="main">
-    <h1 id="headerLine"></h1>
-    <div id="resultTableDiv">
-        <table id="resultTable">
-            <tr>
-                <td>artistName</td>
-                <td>title</td>
-                <td>year</td>
-                <td>description</td>
-                <td>img</td>
-            </tr>
-        </table>
+
+    <div id="recommendationsDiv">
+        <h1 id="recommendationsHeader">Recommendations</h1>
+        <div id="recommendationsResultTableDiv">
+            <table id="recommendationsResultTable">
+                <tr>
+                    <td>artistName</td>
+                    <td>title</td>
+                    <td>year</td>
+                    <td>description</td>
+                    <td>img</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <p id="login-message"></p>
 
-    <form id="login-form" action='/login' method='POST'>
-        <table>
-            <tr><td>Username:</td><td><input type='text' id='loginUsername' required></td></tr>
-            <tr><td>Password:</td><td><input type='password' id='loginPassword' required/></td></tr>
-        </table>
-        <input name="submit" type="button" value="Log In" onclick="loginShow('hide'), auth_user()"/>
-        <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
-    </form>
+    <div id="homeDiv">
+        <h1 id="homeHeader">New Releases</h1>
+        <div id="resultTableDiv">
+            <table id="resultTable">
+                <tr>
+                    <td>artistName</td>
+                    <td>title</td>
+                    <td>year</td>
+                    <td>description</td>
+                    <td>img</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-    <form action="/logout" method="POST">
+    <div id="loginDiv">
+        <h1 id="loginHeader">Log In</h1>
+        <p id="login-message"></p>
+        <form id="login-form" action='/login' method='POST'>
+            <table>
+                <tr><td>Username:</td><td><input type='text' id='loginUsername' required></td></tr>
+                <tr><td>Password:</td><td><input type='password' id='loginPassword' required/></td></tr>
+            </table>
+            <input name="submit" type="button" value="Log In" onclick="auth_user()"/>
+            <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
+        </form>
+    </div>
+
+
+    <form action="/logout" method="POST" style="display: none">
         <input type="submit" value="Sign Out"/>
     </form>
 
-    <form id="sign-up-form">
-        <table>
-            <tr><td>Username:</td><td><input type='text' id='username'></td></tr>
-            <tr><td>E-mail:</td><td><input type='text' id='email'/></td></tr>
-            <tr><td>Confirm E-mail:</td><td><input type='text' id='confirmEmail'/></td></tr>
-            <tr><td>Password:</td><td><input type='password' id='password'/></td></tr>
-            <tr><td>Confirm Password:</td><td><input type='password' id='confirmPassword'/></td></tr>
-        </table>
-        <input name="submit" type="button" value="Sign Up" onclick="signUp(),loginShow('hide')"/>
-        <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
-    </form>
+    <div id="signUpDiv">
+        <h1 id="signUpHeader">Sign Up</h1>
+        <form id="sign-up-form">
+            <table>
+                <tr><td>Username:</td><td><input type='text' id='username'></td></tr>
+                <tr><td>E-mail:</td><td><input type='text' id='email'/></td></tr>
+                <tr><td>Confirm E-mail:</td><td><input type='text' id='confirmEmail'/></td></tr>
+                <tr><td>Password:</td><td><input type='password' id='password'/></td></tr>
+                <tr><td>Confirm Password:</td><td><input type='password' id='confirmPassword'/></td></tr>
+            </table>
+            <input name="submit" type="button" value="Sign Up" onclick="signUp(),loginShow('hide')"/>
+            <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
+        </form>
+    </div>
+
+
+    <div id="advSearchDiv">
+        <h1>Advanced Search</h1>
+        <div class="sidebar">
+
+            <section class="filter-genres">
+                <header><h3>Genres &amp; Styles</h3></header>
+                <div class="tab-content">
+                    <div class="genreOptions">
+                        <ul>
+                            <li class="genre">
+                                <input type="checkbox" id="jazz">
+                                <label for="jazz">Jazz</label>
+                            </li>
+                            <li class="genre">
+                                <input type="checkbox" id="rock">
+                                <label for="rock">Rock</label>
+                            </li>
+                            <li class="genre">
+                                <input type="checkbox" id="pop">
+                                <label for="pop">Pop</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <section class="filter-years">
+                <h3>Release Date</h3>
+                <div class="tab-content">
+                    <div class="options">
+                        <select class="start-year" name="start-year">
+                            <option></option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="2007">2007</option>
+                            <option value="2006">2006</option>
+                            <option value="2005">2005</option>
+                            <option value="2004">2004</option>
+                            <option value="2003">2003</option>
+                            <option value="2002">2002</option>
+                            <option value="2001">2001</option>
+                            <option value="2000">2000</option>
+                            <option value="1999">1999</option>
+                            <option value="1998">1998</option>
+                            <option value="1997">1997</option>
+                            <option value="1996">1996</option>
+                            <option value="1995">1995</option>
+                            <option value="1994">1994</option>
+                            <option value="1993">1993</option>
+                            <option value="1992">1992</option>
+                            <option value="1991">1991</option>
+                            <option value="1990">1990</option>
+                            <option value="1989">1989</option>
+                            <option value="1988">1988</option>
+                            <option value="1987">1987</option>
+                            <option value="1986">1986</option>
+                            <option value="1985">1985</option>
+                            <option value="1984">1984</option>
+                            <option value="1983">1983</option>
+                            <option value="1982">1982</option>
+                            <option value="1981">1981</option>
+                            <option value="1980">1980</option>
+                            <option value="1979">1979</option>
+                            <option value="1978">1978</option>
+                            <option value="1977">1977</option>
+                            <option value="1976">1976</option>
+                            <option value="1975">1975</option>
+                            <option value="1974">1974</option>
+                            <option value="1973">1973</option>
+                            <option value="1972">1972</option>
+                            <option value="1971">1971</option>
+                            <option value="1970">1970</option>
+                            <option value="1969">1969</option>
+                            <option value="1968">1968</option>
+                            <option value="1967">1967</option>
+                            <option value="1966">1966</option>
+                            <option value="1965">1965</option>
+                            <option value="1964">1964</option>
+                            <option value="1963">1963</option>
+                            <option value="1962">1962</option>
+                            <option value="1961">1961</option>
+                            <option value="1960">1960</option>
+                            <option value="1959">1959</option>
+                            <option value="1958">1958</option>
+                            <option value="1957">1957</option>
+                            <option value="1956">1956</option>
+                            <option value="1955">1955</option>
+                            <option value="1954">1954</option>
+                            <option value="1953">1953</option>
+                            <option value="1952">1952</option>
+                            <option value="1951">1951</option>
+                            <option value="1950">1950</option>
+                            <option value="1949">1949</option>
+                            <option value="1948">1948</option>
+                            <option value="1947">1947</option>
+                            <option value="1946">1946</option>
+                            <option value="1945">1945</option>
+                            <option value="1944">1944</option>
+                            <option value="1943">1943</option>
+                            <option value="1942">1942</option>
+                            <option value="1941">1941</option>
+                            <option value="1940">1940</option>
+                            <option value="1939">1939</option>
+                            <option value="1938">1938</option>
+                            <option value="1937">1937</option>
+                            <option value="1936">1936</option>
+                            <option value="1935">1935</option>
+                            <option value="1934">1934</option>
+                            <option value="1933">1933</option>
+                            <option value="1932">1932</option>
+                            <option value="1931">1931</option>
+                            <option value="1930">1930</option>
+                            <option value="1929">1929</option>
+                            <option value="1928">1928</option>
+                            <option value="1927">1927</option>
+                            <option value="1926">1926</option>
+                            <option value="1925">1925</option>
+                            <option value="1924">1924</option>
+                            <option value="1923">1923</option>
+                            <option value="1922">1922</option>
+                            <option value="1921">1921</option>
+                            <option value="1920">1920</option>
+                        </select>
+                        TO
+                        <select class="end-year" name="end-year">
+                            <option></option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="2007">2007</option>
+                            <option value="2006">2006</option>
+                            <option value="2005">2005</option>
+                            <option value="2004">2004</option>
+                            <option value="2003">2003</option>
+                            <option value="2002">2002</option>
+                            <option value="2001">2001</option>
+                            <option value="2000">2000</option>
+                            <option value="1999">1999</option>
+                            <option value="1998">1998</option>
+                            <option value="1997">1997</option>
+                            <option value="1996">1996</option>
+                            <option value="1995">1995</option>
+                            <option value="1994">1994</option>
+                            <option value="1993">1993</option>
+                            <option value="1992">1992</option>
+                            <option value="1991">1991</option>
+                            <option value="1990">1990</option>
+                            <option value="1989">1989</option>
+                            <option value="1988">1988</option>
+                            <option value="1987">1987</option>
+                            <option value="1986">1986</option>
+                            <option value="1985">1985</option>
+                            <option value="1984">1984</option>
+                            <option value="1983">1983</option>
+                            <option value="1982">1982</option>
+                            <option value="1981">1981</option>
+                            <option value="1980">1980</option>
+                            <option value="1979">1979</option>
+                            <option value="1978">1978</option>
+                            <option value="1977">1977</option>
+                            <option value="1976">1976</option>
+                            <option value="1975">1975</option>
+                            <option value="1974">1974</option>
+                            <option value="1973">1973</option>
+                            <option value="1972">1972</option>
+                            <option value="1971">1971</option>
+                            <option value="1970">1970</option>
+                            <option value="1969">1969</option>
+                            <option value="1968">1968</option>
+                            <option value="1967">1967</option>
+                            <option value="1966">1966</option>
+                            <option value="1965">1965</option>
+                            <option value="1964">1964</option>
+                            <option value="1963">1963</option>
+                            <option value="1962">1962</option>
+                            <option value="1961">1961</option>
+                            <option value="1960">1960</option>
+                            <option value="1959">1959</option>
+                            <option value="1958">1958</option>
+                            <option value="1957">1957</option>
+                            <option value="1956">1956</option>
+                            <option value="1955">1955</option>
+                            <option value="1954">1954</option>
+                            <option value="1953">1953</option>
+                            <option value="1952">1952</option>
+                            <option value="1951">1951</option>
+                            <option value="1950">1950</option>
+                            <option value="1949">1949</option>
+                            <option value="1948">1948</option>
+                            <option value="1947">1947</option>
+                            <option value="1946">1946</option>
+                            <option value="1945">1945</option>
+                            <option value="1944">1944</option>
+                            <option value="1943">1943</option>
+                            <option value="1942">1942</option>
+                            <option value="1941">1941</option>
+                            <option value="1940">1940</option>
+                            <option value="1939">1939</option>
+                            <option value="1938">1938</option>
+                            <option value="1937">1937</option>
+                            <option value="1936">1936</option>
+                            <option value="1935">1935</option>
+                            <option value="1934">1934</option>
+                            <option value="1933">1933</option>
+                            <option value="1932">1932</option>
+                            <option value="1931">1931</option>
+                            <option value="1930">1930</option>
+                            <option value="1929">1929</option>
+                            <option value="1928">1928</option>
+                            <option value="1927">1927</option>
+                            <option value="1926">1926</option>
+                            <option value="1925">1925</option>
+                            <option value="1924">1924</option>
+                            <option value="1923">1923</option>
+                            <option value="1922">1922</option>
+                            <option value="1921">1921</option>
+                            <option value="1920">1920</option>
+                        </select>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+
 
 </div>
+
 
 
 </body>

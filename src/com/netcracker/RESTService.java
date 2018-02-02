@@ -6,6 +6,7 @@ import com.netcracker.Objects.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -76,6 +77,18 @@ public class RESTService {
 
         return new ResponseEntity<String>("failure", HttpStatus.UNAUTHORIZED);
     }*/
+
+    //@Secured({ "ROLE_USER" })
+    @GetMapping(value = "/recommendations",produces ="application/json" )
+    public ResponseEntity<List<Album>> getRecommendations(){
+
+        List<Album> albums = service.getAlbums();
+
+        if (albums.isEmpty())
+            return new ResponseEntity<List<Album>>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<List<Album>>(albums, HttpStatus.OK);
+    }
 
 
 

@@ -26,6 +26,7 @@ body{
     height: 40px;
     display: inline;
 }
+#logo-div{cursor: pointer;}
 
 #navigation #navdiv{
     margin: 0px;
@@ -68,16 +69,15 @@ h2{
     padding: 20px;
     width: 900px;
     margin: 0 auto;
+    min-height: 800px;
 }
 
 #login-form {
-    display: none;
     width: 300px;
     margin: 0 auto;
     text-align: center;
 }
 #sign-up-form{
-    display: none;
     width: 450px;
     margin: 0 auto;
     text-align: center;
@@ -86,10 +86,23 @@ h2{
     display: none;
     font-size: 20px;
 }
+.sidebar{
+    float: left;
+    width: 230px;
+    background-color: #cbeae8;
+}
+.genreOptions{
+    height: 200px;
+    min-height: 200px;
+}
 
 #resultTable {margin: 0 auto; width: 900px}
 #resultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
 #resultTable tr:nth-child(even) {background: #fff; padding: 0px}
+
+#recommendationsResultTable {margin: 0 auto; width: 900px}
+#recommendationsResultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
+#recommendationsResultTable tr:nth-child(even) {background: #fff; padding: 0px}
 
 h1{
     text-align: center;
