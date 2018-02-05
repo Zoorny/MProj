@@ -86,21 +86,26 @@ h2{
     display: none;
     font-size: 20px;
 }
+#loginReq{font-size: 20px; display: none}
+#profileReq{font-size: 20px; display: none}
 .sidebar{
     float: left;
     width: 230px;
     background-color: #cbeae8;
+    min-height: 550px;
 }
+
 .genreOptions{
     height: 200px;
     min-height: 200px;
 }
+.genre{list-style: none}
 
 #resultTable {margin: 0 auto; width: 900px}
 #resultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
 #resultTable tr:nth-child(even) {background: #fff; padding: 0px}
 
-#recommendationsResultTable {margin: 0 auto; width: 900px}
+#recommendationsResultTable {margin: 0 auto; width: 900px;}
 #recommendationsResultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
 #recommendationsResultTable tr:nth-child(even) {background: #fff; padding: 0px}
 

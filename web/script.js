@@ -22,12 +22,21 @@ function createXmlHttpRequestObject() {
         return xmlHttp;
 }
 var url = "http://localhost:8081/"
-/*if ((document.getElementById("username") != null) &&(document.getElementById("password") != null)){
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
-    var requestHeaderAuth = ("Authorization" + "Basic " + btoa(username + ":" + password));
-}*/
 
+function initializePage() {
+    var loggedIn = getCookie("logged_in");
+    if (loggedIn!=null)
+    {
+        var username = getCookie("username");
+
+        var regButton = document.getElementById("sign-up");
+        var logButton = document.getElementById("login-button");
+        regButton.innerHTML = username;
+        regButton.setAttribute("onclick", "");
+        logButton.innerHTML = "Log out";
+        logButton.setAttribute("onclick", "logout()");
+    }
+}
 
 function homeScript() {
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
@@ -85,10 +94,27 @@ function homeServerResponse() {
 }
 
 function recommendationsScript() {
+    hideElements();
+    recommendationsClearTable();
+    document.getElementById("recommendationsDiv").style.display = 'inline';
+    document.getElementById("recommendationsResultTableDiv").style.display='none';
+    var loggedIn = getCookie("logged_in");
+    if(loggedIn!='true'){
+        document.getElementById("loginReq").style.display='inline';
+        return;
+    }
+    document.getElementById("recommendationsResultTableDiv").style.display='inline';
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
-        xmlHttp.open("GET", "rest/album/", true);
+        var username = getCookie("username");
+        var password = getCookie("password");
+
+        xmlHttp.open("GET", "rest/recommendations/", true);
         //xmlHttp.setRequestHeader(requestHeaderAuth);
+        //var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+        //xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xmlHttp.withCredentials = true;
+        xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
         xmlHttp.onreadystatechange  = recommendationsResponse();
         xmlHttp.send(null);
     }else {
@@ -96,12 +122,10 @@ function recommendationsScript() {
     }
 }
 function recommendationsResponse() {
-
+    document.getElementById("loginReq").style.display='none';
     if (xmlHttp.readyState == 4) {
         if (xmlHttp.status == 200) {
-            hideElements();
-            clearTable();
-            document.getElementById("recommendationsDiv").style.display = 'inline';
+
             var resp = JSON.parse(xmlHttp.responseText);
 
 
@@ -134,6 +158,7 @@ function recommendationsResponse() {
                 fillTable(resp);
             }
         }
+
     }else setTimeout('recommendationsResponse()',1000);
 }
 
@@ -185,8 +210,8 @@ function clearTable() {
         table.removeChild(table.lastChild);
     }
 }
-function recommendationslearTable() {
-    var table = document.getElementById("resultTable");
+function recommendationsClearTable() {
+    var table = document.getElementById("recommendationsResultTable");
     while(table.hasChildNodes() && table.rows.length >1)
     {
         table.removeChild(table.lastChild);
@@ -227,7 +252,39 @@ function loginShow(showhide) {
     }
 }
 
+function profile() {
+    hideElements();
+    document.getElementById("profileDiv").style.display = 'inline';
+    document.getElementById("profileContent").style.display = 'none';
+    var loggedIn = getCookie("logged_in");
+    if(loggedIn!='true'){
+        document.getElementById("profileReq").style.display='inline';
+        return;
+    }
+    document.getElementById("profileReq").style.display='none';
+    document.getElementById("profileContent").style.display = 'inline';
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
+        var username = getCookie("username");
+        xmlHttp.open("GET", "rest/user/" + username, true);
+        //xmlHttp.setRequestHeader(requestHeaderAuth);
+        xmlHttp.onreadystatechange  = profileServerResponse();
+        xmlHttp.send(null);
+    }else {
+        setTimeout('profile()',1000);
+    }
+}
+function profileServerResponse() {
+
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 200) {
+            var resp = JSON.parse(xmlHttp.responseText);
+            document.getElementById("profile-name").innerHTML = resp.username;
+            document.getElementById("profile-email").innerHTML = resp.email;
+
+        }
+    }else setTimeout('profileServerResponse()',1000);
+}
 
 //For later
 function validate() {
@@ -242,10 +299,10 @@ function validate() {
 function hideElements() {
     document.getElementById("loginDiv").style.display = 'none';
     document.getElementById("homeDiv").style.display = 'none';
-    document.getElementById("loginDiv").style.display = 'none';
     document.getElementById("advSearchDiv").style.display = 'none';
     document.getElementById("signUpDiv").style.display = 'none';
     document.getElementById("recommendationsDiv").style.display = 'none';
+    document.getElementById("profileDiv").style.display = 'none';
 }
 
 function auth_user() {
@@ -253,31 +310,28 @@ function auth_user() {
 
         var username = document.getElementById("loginUsername").value;
         var password = document.getElementById("loginPassword").value;
-        console.log(username);
-        console.log(password);
         var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+        setCookie("username", username, 3600);
+        setCookie("password", password, 3600);
         xmlHttp.open("POST", url + "login", true);
         xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         //xmlHttp.withCredentials = true;
         //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-        xmlHttp.onreadystatechange  = ok();
+        xmlHttp.onreadystatechange  = auth_ok();
         xmlHttp.send(body);
     }
     else setTimeout('auth_user()',1000);
 }
-function ok() {
+function auth_ok() {
     var text = document.getElementById("login-message");
-    var regButton = document.getElementById("sign-up");
-    var logButton = document.getElementById("login-button");
+
+
     if(xmlHttp.status == 200){
+        setCookie("logged_in", true, 3600);
         loginShow('hide');
+        initializePage();
         text.innerHTML = xmlHttp.responseText;
         text.style.display = "block";
-        regButton.innerHTML = "Username";
-        regButton.setAttribute("onclick", "");
-        logButton.innerHTML = "Log out";
-        logButton.setAttribute("onclick", "")
-
     }
 
     else if(xmlHttp.status == 401){
@@ -285,10 +339,83 @@ function ok() {
         text.style.display = "block";
     }
 
-    else setTimeout('ok()',1000);
+    else setTimeout('auth_ok()',1000);
+}
+
+function logout() {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        xmlHttp.open("POST", url + "logout", true);
+        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        //xmlHttp.withCredentials = true;
+        //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+        xmlHttp.onreadystatechange  = function loggedOut(){
+
+            deleteCookie("username");
+            deleteCookie("password");
+            deleteCookie("logged_in");
+            var username = getCookie("username");
+            var password = getCookie("password");
+
+            var regButton = document.getElementById("sign-up");
+            var logButton = document.getElementById("login-button");
+            regButton.innerHTML = "Sign up";
+            regButton.setAttribute("onclick", "signUpShow('show')");
+            logButton.innerHTML = "Log in";
+            logButton.setAttribute("onclick","loginShow('show')");
+
+        };
+        xmlHttp.send(null);
+    }
+    else setTimeout('logout()',1000);
 }
 
 
 
+
+
+//Cookies
+function setCookie(name, value, options) {
+    options = options || {};
+
+    var expires = options.expires;
+
+    if (typeof expires == "number" && expires) {
+        var d = new Date();
+        d.setTime(d.getTime() + expires * 1000);
+        expires = options.expires = d;
+    }
+    if (expires && expires.toUTCString) {
+        options.expires = expires.toUTCString();
+    }
+
+    value = encodeURIComponent(value);
+
+    var updatedCookie = name + "=" + value;
+
+    for (var propName in options) {
+        updatedCookie += "; " + propName;
+        var propValue = options[propName];
+        if (propValue !== true) {
+            updatedCookie += "=" + propValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+}
+
+// возвращает cookie с именем name, если есть, если нет, то undefined
+function getCookie(name) {
+    var matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function deleteCookie(name) {
+    setCookie(name, "", {
+        expires: -1
+    })
+}
 
 

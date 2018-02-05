@@ -71,14 +71,7 @@ public class RESTService {
         return new ResponseEntity<String>("User created", HttpStatus.CREATED);
     }
 
-/*    @RequestMapping(value = "/failure")
-    public ResponseEntity<String> loginFailure(){
-
-
-        return new ResponseEntity<String>("failure", HttpStatus.UNAUTHORIZED);
-    }*/
-
-    //@Secured({ "ROLE_USER" })
+    @Secured({ "ROLE_USER" })
     @GetMapping(value = "/recommendations",produces ="application/json" )
     public ResponseEntity<List<Album>> getRecommendations(){
 
@@ -88,6 +81,17 @@ public class RESTService {
             return new ResponseEntity<List<Album>>(HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<List<Album>>(albums, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/user/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username){
+        User user = service.getUserByUsername(username);
+
+        if (user == null)
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+
     }
 
 

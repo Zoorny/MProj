@@ -72,7 +72,7 @@ public class OracleDAOImpl implements OracleDAO {
         jdbcTemplate.update(sql2, new Object[]{user.getUsername(), "ROLE_USER"});
     }
 
-    public User findUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         String sql = "select * from USERS where USERNAME = :username";
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("username", username);

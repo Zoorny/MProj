@@ -24,6 +24,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
+/*	@Autowired
+	CustomAccessDeniedHandler customAccessDeniedHandler;*/
+
 	@Autowired
 	DataSource dataSource;
 
@@ -57,16 +60,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("http://localhost:8081/rest/recommendations").hasRole("USER")
-                .antMatchers("http://localhost:8081/rest/api/**").authenticated()
+                .antMatchers("/recommendations").hasRole("USER")
+                .antMatchers("/profile/**").hasRole("USER")
                 .antMatchers("/profile.html").hasRole("USER")
                 .antMatchers("/admin.html").hasRole("ADMIN")
                 .and().httpBasic().realmName(REALM).authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and().formLogin()
                 .permitAll().successHandler(customAuthenticationSuccessHandler).failureHandler(customAuthenticationFailureHandler)
-                //.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().logout().logoutSuccessHandler(customLogoutSuccessHandler);
-		http.exceptionHandling().accessDeniedPage("/index.jsp");
+				//.and().exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
+
  	}
 
 
@@ -77,9 +81,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public CustomBasicAuthenticationEntryPoint getBasicAuthEntryPoint(){
 		return new CustomBasicAuthenticationEntryPoint();
 	}*/
-	
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
-    }
+
 }

@@ -41,8 +41,8 @@ public class ServiceImpl implements Service {
         oracleDAO.createUser(user);
     }
 
-    public User findUserByUsername(String username) {
-        return oracleDAO.findUserByUsername(username);
+    public User getUserByUsername(String username) {
+        return oracleDAO.getUserByUsername(username);
     }
 
 

@@ -6,7 +6,7 @@
     <link href="stylesheet.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="script.js"></script>
 </head>
-<body onload="homeScript()">
+<body onload="homeScript(), initializePage()">
 
 <div id="header"></div>
 
@@ -19,8 +19,8 @@
         <div class="navdiv">
             <ul class="navbar">
                 <li><a onclick="homeScript()">Home</a></li>
-                <li><a href="/rest/recommendations" >Recommendations</a></li>
-                <li><a href="/profile.html">Profile</a></li>
+                <li><a onclick="recommendationsScript()">Recommendations</a></li>
+                <li><a onclick="profile()">Profile</a></li>
                 <li><a onclick="advSearchScript()">Advanced Search</a></li>
             </ul>
             <ul class="navbar" id="logbar">
@@ -33,21 +33,6 @@
 </div>
 
 <div class="main">
-
-    <div id="recommendationsDiv">
-        <h1 id="recommendationsHeader">Recommendations</h1>
-        <div id="recommendationsResultTableDiv">
-            <table id="recommendationsResultTable">
-                <tr>
-                    <td>artistName</td>
-                    <td>title</td>
-                    <td>year</td>
-                    <td>description</td>
-                    <td>img</td>
-                </tr>
-            </table>
-        </div>
-    </div>
 
     <div id="homeDiv">
         <h1 id="homeHeader">New Releases</h1>
@@ -64,6 +49,33 @@
         </div>
     </div>
 
+    <div id="recommendationsDiv">
+        <h1 id="recommendationsHeader">Recommendations</h1>
+        <p id="loginReq">Log in to see recommendations.</p>
+        <div id="recommendationsResultTableDiv">
+            <table id="recommendationsResultTable">
+                <tr>
+                    <td>artistName</td>
+                    <td>title</td>
+                    <td>year</td>
+                    <td>description</td>
+                    <td>img</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="profileDiv">
+        <h1>User profile</h1>
+        <p id="profileReq">Log in to see profile.</p>
+        <div id="profileContent">
+            profile-name: <h2 id="profile-name"></h2><br/>
+            profile-email: <h2 id="profile-email"></h2>
+        </div>
+
+
+    </div>
+
     <div id="loginDiv">
         <h1 id="loginHeader">Log In</h1>
         <p id="login-message"></p>
@@ -76,11 +88,6 @@
             <input name="close" type="button" value="Close" onclick="loginShow('hide')"/>
         </form>
     </div>
-
-
-    <form action="/logout" method="POST" style="display: none">
-        <input type="submit" value="Sign Out"/>
-    </form>
 
     <div id="signUpDiv">
         <h1 id="signUpHeader">Sign Up</h1>
@@ -336,8 +343,53 @@
 
                 </div>
             </section>
+            <section class="filter-rating">
+                <h3>Rating</h3>
+                <div class="tab-content">
+                    <div class="options">
+                        <select class="min-rating">
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                        TO
+                        <select class="max-rating">
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+            <section class="filter-artists">
+                <h3>Artist</h3>
+                <div class="tab-content">
+                    <div class="tab-content">
+                        <input type="text" placeholder="type to filter artists by name">
+                    </div>
+                </div>
+
+            </section>
         </div>
     </div>
+
+
 
 
 
