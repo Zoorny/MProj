@@ -104,7 +104,6 @@
         </form>
     </div>
 
-
     <div id="advSearchDiv">
         <h1>Advanced Search</h1>
         <div class="sidebar">
@@ -386,6 +385,58 @@
                 </div>
 
             </section>
+        </div>
+    </div>
+
+    <div id="artistDiv">
+        <h2 id="artistName"></h2>
+        <h1>Biography</h1>
+        <p id="artistDescription"></p>
+        <div id="discographyDiv">
+            <h1>Discography</h1>
+            <table id="discographyTable">
+                <tr>
+                    <td>img</td>
+                    <td>year</td>
+                    <td>title</td>
+                    <td>rating</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="albumDiv">
+        <h1 id="albumTitle"></h1>
+        <img id="albumImage"><br/>
+        Performer: <label id="performer"></label><br/>
+        Year: <label id="albumYear"></label><br/>
+        Description: <p id="albumDescription"></p>
+        <div id="setRating">
+            Your Rating:
+            <select id="ratingSelect">
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+        </div>
+        <div id="songsDiv">
+            <h1>Tracklist</h1>
+            <table id="songsTable">
+                <tr>
+                    <td></td>
+                    <td>Title</td>
+                    <td>Performer</td>
+                    <td>Time</td>
+                </tr>
+            </table>
         </div>
     </div>
 

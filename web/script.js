@@ -54,14 +54,17 @@ function homeServerResponse() {
 
     if (xmlHttp.readyState == 4) {
         if (xmlHttp.status == 200) {
-            var resp = JSON.parse(xmlHttp.responseText);
-            clearTable();
+            var response = JSON.parse(xmlHttp.responseText);
+            var table = document.getElementById("resultTable");
+            clearTable(table);
             hideElements();
             document.getElementById("homeDiv").style.display = 'inline';
+            if (isNaN(response.length)){
+                var resp = [response];
+            } else resp = response;
 
+            for (var i = 0; i < resp.length; i++) {
 
-            if (!isNaN(resp.length))for (var i = 0; i < resp.length; i++) {
-                var table = document.getElementById("resultTable");
                 var trelem = document.createElement('tr');
                 var tdelem1 = document.createElement('td');
                 var tdelem2 = document.createElement('td');
@@ -73,10 +76,26 @@ function homeServerResponse() {
                 image.width = 200;
                 image.heigh = 200;
 
-                tdelem1.innerHTML = resp[i].artistName;
-                tdelem2.innerHTML = resp[i].title;
-                tdelem3.innerHTML = resp[i].year;
-                tdelem4.innerHTML = resp[i].description;
+                var artist = resp[i].artistName;
+                var album = resp[i].title;
+
+
+                var refElement1 = document.createElement('a');
+                refElement1.setAttribute('class', 'tableRef');
+                refElement1.innerHTML = artist;
+                refElement1.value = resp[i].artistId;
+                refElement1.setAttribute('onclick', 'getArtist(this.value)');
+                tdelem1.appendChild(refElement1);
+
+                var refElement2 = document.createElement('a');
+                refElement2.setAttribute('class', 'tableRef');
+                refElement2.innerHTML = album;
+                refElement2.value = resp[i].id;
+                refElement2.setAttribute('onclick', 'getAlbum(this.value)');
+                tdelem2.appendChild(refElement2);
+
+                tdelem3.innerHTML = "<a>" + resp[i].year +"</a>";
+                tdelem4.innerHTML = "<a>" + resp[i].description +"</a>";
                 tdelem5.appendChild(image);
 
                 trelem.appendChild(tdelem1);
@@ -86,16 +105,145 @@ function homeServerResponse() {
                 trelem.appendChild(tdelem5);
                 table.appendChild(trelem);
 
-            }else {
-                fillTable(resp);
             }
         }
     }else setTimeout('homeServerResponse()',1000);
 }
 
+function getArtist(id) {
+    hideElements();
+    document.getElementById("artistDiv").style.display = 'inline';
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        xmlHttp.open("GET", "rest/artist/" + id, true);
+        xmlHttp.onreadystatechange  = artistServerResponse();
+        xmlHttp.send(null);
+    }else {
+        setTimeout('getArtist(id)',1000);
+    }
+}
+function artistServerResponse() {
+
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 200) {
+            var resp = JSON.parse(xmlHttp.responseText);
+            document.getElementById("artistName").innerHTML = resp.name;
+            document.getElementById("artistDescription").innerHTML = resp.description;
+            var table = document.getElementById("discographyTable");
+            clearTable(table);
+            for (var i = 0; i < resp.albums.length; i++) {
+
+                var trelem = document.createElement('tr');
+                var tdelem1 = document.createElement('td');
+                var tdelem2 = document.createElement('td');
+                var tdelem3 = document.createElement('td');
+                var tdelem4 = document.createElement('td');
+                var image = document.createElement('img');
+                image.src = "images/" + resp.albums[i].id +".jpg";
+                image.width = 100;
+                image.heigh = 100;
+
+                var album = resp.albums[i].title;
+
+                tdelem1.appendChild(image);
+                tdelem2.innerHTML = resp.albums[i].year;
+
+                var refElement3 = document.createElement('a');
+                refElement3.setAttribute('class', 'tableRef');
+                refElement3.innerHTML = album;
+                refElement3.value = resp.albums[i].id;
+                refElement3.setAttribute('onclick', 'getAlbum(this.value)');
+                tdelem3.appendChild(refElement3);
+
+                tdelem4.innerHTML = "";
+
+
+                trelem.appendChild(tdelem1);
+                trelem.appendChild(tdelem2);
+                trelem.appendChild(tdelem3);
+                trelem.appendChild(tdelem4);
+
+                table.appendChild(trelem);
+
+            }
+
+        }
+    }else setTimeout('artistServerResponse()',1000);
+}
+
+function getAlbum(id) {
+    hideElements();
+    document.getElementById("albumDiv").style.display = 'inline';
+    var loggedIn = getCookie("logged_in");
+    if(loggedIn!='true'){
+        document.getElementById('setRating').style.display='none';
+    } else {
+        document.getElementById('ratingSelect').value = getRating(id);
+        document.getElementById('setRating').style.display='inline';
+    }
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        xmlHttp.open("GET", "rest/album/" + id, true);
+        xmlHttp.onreadystatechange  = albumServerResponse();
+        xmlHttp.send(null);
+    }else {
+        setTimeout('getAlbum(id)',1000);
+    }
+}
+function albumServerResponse() {
+
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 200) {
+            var resp = JSON.parse(xmlHttp.responseText);
+            var table = document.getElementById("songsTable");
+            clearTable(table);
+            document.getElementById("albumTitle").innerHTML = resp.title;
+            var artist = document.getElementById("performer");
+            artist.innerHTML = resp.artistName;
+            artist.value = resp.artistId;
+            artist.setAttribute('onclick', 'getArtist(this.value)');
+            document.getElementById("albumYear").innerHTML = resp.year;
+            document.getElementById("albumDescription").innerHTML = resp.description;
+            var image = document.getElementById('albumImage');
+            image.src = "images/" + resp.id +".jpg";
+            image.width = 200;
+            image.heigh = 200;
+
+            for (var i = 0; i < resp.songs.length; i++) {
+
+                var trelem = document.createElement('tr');
+                var tdelem1 = document.createElement('td');
+                var tdelem2 = document.createElement('td');
+                var tdelem3 = document.createElement('td');
+                var tdelem4 = document.createElement('td');
+
+                tdelem1.innerHTML = i + 1;
+                tdelem2.innerHTML = resp.songs[i].title;
+                tdelem3.innerHTML = resp.artistName;
+                tdelem4.innerHTML = timeConvert(resp.songs[i].duration);
+
+
+                trelem.appendChild(tdelem1);
+                trelem.appendChild(tdelem2);
+                trelem.appendChild(tdelem3);
+                trelem.appendChild(tdelem4);
+                table.appendChild(trelem);
+
+            }
+
+        }
+    }else setTimeout('albumServerResponse()',1000);
+}
+function getRating(id) {
+    return 7;
+}
+
+
+
 function recommendationsScript() {
     hideElements();
-    recommendationsClearTable();
+    var table = document.getElementById("recommendationsResultTable");
+    clearTable(table);
     document.getElementById("recommendationsDiv").style.display = 'inline';
     document.getElementById("recommendationsResultTableDiv").style.display='none';
     var loggedIn = getCookie("logged_in");
@@ -126,10 +274,12 @@ function recommendationsResponse() {
     if (xmlHttp.readyState == 4) {
         if (xmlHttp.status == 200) {
 
-            var resp = JSON.parse(xmlHttp.responseText);
+            var response = JSON.parse(xmlHttp.responseText);
+            if (isNaN(response.length)){
+                var resp = [response];
+            } else resp = response;
 
-
-            if (!isNaN(resp.length))for (var i = 0; i < resp.length; i++) {
+            for (var i = 0; i < resp.length; i++) {
                 var table = document.getElementById("recommendationsResultTable");
                 var trelem = document.createElement('tr');
                 var tdelem1 = document.createElement('td');
@@ -141,8 +291,25 @@ function recommendationsResponse() {
                 image.src = "images/" + resp[i].id +".jpg";
                 image.width = 200;
                 image.heigh = 200;
-                tdelem1.innerHTML = resp[i].artistName;
-                tdelem2.innerHTML = resp[i].title;
+
+                var artist = resp[i].artistName;
+                var album = resp[i].title;
+
+
+                var refElement1 = document.createElement('a');
+                refElement1.innerHTML = artist;
+                refElement1.setAttribute('class', 'tableRef');
+                refElement1.value = resp[i].artistId;
+                refElement1.setAttribute('onclick', 'getArtist(this.value)');
+                tdelem1.appendChild(refElement1);
+
+                var refElement2 = document.createElement('a');
+                refElement2.setAttribute('class', 'tableRef');
+                refElement2.innerHTML = album;
+                refElement2.value = resp[i].id;
+                refElement2.setAttribute('onclick', 'getAlbum(this.value)');
+                tdelem2.appendChild(refElement2);
+
                 tdelem3.innerHTML = resp[i].year;
                 tdelem4.innerHTML = resp[i].description;
                 tdelem5.appendChild(image);
@@ -154,8 +321,6 @@ function recommendationsResponse() {
                 trelem.appendChild(tdelem5);
                 table.appendChild(trelem);
 
-            }else {
-                fillTable(resp);
             }
         }
 
@@ -187,11 +352,6 @@ function advSearchScript() {
     document.getElementById("advSearchDiv").style.display = 'block';
 }
 
-
-function profileScript() {
-    
-}
-
 function signUpShow(showhide) {
     if(showhide== 'show'){
         hideElements();
@@ -203,41 +363,11 @@ function signUpShow(showhide) {
     }
 }
 
-function clearTable() {
-    var table = document.getElementById("resultTable");
+function clearTable(table) {
     while(table.hasChildNodes() && table.rows.length >1)
     {
         table.removeChild(table.lastChild);
     }
-}
-function recommendationsClearTable() {
-    var table = document.getElementById("recommendationsResultTable");
-    while(table.hasChildNodes() && table.rows.length >1)
-    {
-        table.removeChild(table.lastChild);
-    }
-}
-
-function fillTable(resp) {
-    var table = document.getElementById("recommendationsResultTable");
-    var trelem = document.createElement('tr');
-    var tdelem1 = document.createElement('td');
-    var tdelem2 = document.createElement('td');
-    var tdelem3 = document.createElement('td');
-    var tdelem4 = document.createElement('td');
-    var tdelem5 = document.createElement('td');
-    tdelem1.innerHTML = resp.artistName;
-    tdelem2.innerHTML = resp.title;
-    tdelem3.innerHTML = resp.year;
-    tdelem4.innerHTML = resp.description;
-    tdelem5.innerHTML = resp.description;
-
-    trelem.appendChild(tdelem1);
-    trelem.appendChild(tdelem2);
-    trelem.appendChild(tdelem3);
-    trelem.appendChild(tdelem4);
-    trelem.appendChild(tdelem5);
-    table.appendChild(trelem);
 }
 
 function loginShow(showhide) {
@@ -303,6 +433,8 @@ function hideElements() {
     document.getElementById("signUpDiv").style.display = 'none';
     document.getElementById("recommendationsDiv").style.display = 'none';
     document.getElementById("profileDiv").style.display = 'none';
+    document.getElementById("artistDiv").style.display = 'none';
+    document.getElementById("albumDiv").style.display = 'none';
 }
 
 function auth_user() {
@@ -370,10 +502,6 @@ function logout() {
     else setTimeout('logout()',1000);
 }
 
-
-
-
-
 //Cookies
 function setCookie(name, value, options) {
     options = options || {};
@@ -404,7 +532,6 @@ function setCookie(name, value, options) {
     document.cookie = updatedCookie;
 }
 
-// возвращает cookie с именем name, если есть, если нет, то undefined
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
@@ -416,6 +543,15 @@ function deleteCookie(name) {
     setCookie(name, "", {
         expires: -1
     })
+}
+
+//time conversion from seconds
+function timeConvert(time){
+    return num(Math.floor(time/60)) + ':' + num(time%60);
+}
+function num(val){
+    val = Math.floor(val);
+    return val < 10 ? '0' + val : val;
 }
 
 

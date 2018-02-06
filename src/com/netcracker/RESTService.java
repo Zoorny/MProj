@@ -65,13 +65,23 @@ public class RESTService {
         return new ResponseEntity<List<Album>>(albums, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/album/{id}")
+    public ResponseEntity<Album> getAlbumById(@PathVariable("id") int id){
+        Album album = service.getAlbumById(id);
+
+        if (album == null)
+            return new ResponseEntity<Album>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<Album>(album, HttpStatus.OK);
+
+    }
+
     @PostMapping(value = "/register",consumes = "application/json")
     public ResponseEntity<String> createUser(@RequestBody User user){
         service.createUser(user);
         return new ResponseEntity<String>("User created", HttpStatus.CREATED);
     }
 
-    @Secured({ "ROLE_USER" })
     @GetMapping(value = "/recommendations",produces ="application/json" )
     public ResponseEntity<List<Album>> getRecommendations(){
 
@@ -93,6 +103,20 @@ public class RESTService {
         return new ResponseEntity<User>(user, HttpStatus.OK);
 
     }
+
+    @GetMapping(value = "/rating/{userId,albumId}")
+    public ResponseEntity<String> getAlbumRating(@PathVariable("userId") int userId, @PathVariable("albumId")int albumId){
+
+        return new ResponseEntity<String>(service.getAlbumRating(albumId, userId), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/rating/{albumId,userId,rating}",consumes = "application/json")
+    public ResponseEntity<String> setAlbumRating(@PathVariable("userId") int userId, @PathVariable("albumId")int albumId,
+                                                 @PathVariable("rating") int rating){
+        service.setAlbumRating(userId, albumId, rating);
+        return new ResponseEntity<String>("Rating updated", HttpStatus.OK);
+    }
+
 
 
 

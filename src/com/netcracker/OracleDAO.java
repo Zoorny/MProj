@@ -18,4 +18,7 @@ public interface OracleDAO {
     void createUser(User user);
     User getUserByUsername(String username);
 
+    String getAlbumRating(int albumId, int userId);
+    void setAlbumRating(int albumId, int userId, int rating);
+
 }

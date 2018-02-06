@@ -1,6 +1,7 @@
 package com.netcracker.Objects;
 
-import java.util.Date;
+
+import java.util.List;
 
 public class Album {
 
@@ -9,6 +10,8 @@ public class Album {
     private String title;
     private int year;
     private String description;
+    private int artistId;
+    private List<Song> songs;
 
     public int getId() {
         return id;
@@ -50,6 +53,22 @@ public class Album {
         this.description = description;
     }
 
+    public int getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(int artistId) {
+        this.artistId = artistId;
+    }
+
+    public List<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
+
     @Override
     public String toString() {
         return "Album{" +
@@ -58,6 +77,7 @@ public class Album {
                 ", title='" + title + '\'' +
                 ", year=" + year +
                 ", description='" + description + '\'' +
+                ", artistId=" + artistId +
                 '}';
     }
 }
