@@ -12,6 +12,7 @@ public class Album {
     private String description;
     private int artistId;
     private List<Song> songs;
+    private String rating;
 
     public int getId() {
         return id;
@@ -67,6 +68,14 @@ public class Album {
 
     public void setSongs(List<Song> songs) {
         this.songs = songs;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 
     @Override

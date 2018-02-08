@@ -102,6 +102,11 @@ h2{
 .genre{list-style: none}
 #performer:hover{cursor: pointer;}
 .tableRef:hover{cursor: pointer;}
+#user-review{
+    height: 100px;
+    width: 450px;
+}
+.genreOptions{overflow:auto; height:70px;}
 
 #resultTable {margin: 0 auto; width: 900px}
 #resultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }

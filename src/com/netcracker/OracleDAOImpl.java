@@ -1,13 +1,7 @@
 package com.netcracker;
 
-import com.netcracker.Mappers.AlbumMapper;
-import com.netcracker.Mappers.ArtistMapper;
-import com.netcracker.Mappers.SongMapper;
-import com.netcracker.Mappers.UserMapper;
-import com.netcracker.Objects.Album;
-import com.netcracker.Objects.Artist;
-import com.netcracker.Objects.Song;
-import com.netcracker.Objects.User;
+import com.netcracker.Mappers.*;
+import com.netcracker.Objects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -60,7 +54,6 @@ public class OracleDAOImpl implements OracleDAO {
     public List<Album> getAlbums(){
         String sql = "SELECT album_id,artist_name,album_title,album_year,album_desc,albums.artist_id" +
                 " FROM albums, artists WHERE albums.artist_id = artists.artist_id";
-
         return namedParameterJdbcTemplate.query(sql, new AlbumMapper());
     }
 
@@ -90,18 +83,73 @@ public class OracleDAOImpl implements OracleDAO {
         return namedParameterJdbcTemplate.query(sql, namedParams, new UserMapper()).get(0);
     }
 
-    public String getAlbumRating(int albumId, int userId) {
-        String sql = "select ALBUM_RATING FROM ALBUM_RATINGS WHERE ALBUM_ID = ? AND USER_ID = ?";
+    public User getUserById(int id) {
+        String sql = "select * from USERS where USER_ID = :id";
         Map<String, Object> namedParams = new HashMap<String, Object>();
-        return jdbcTemplate.queryForObject(sql, new Object[]{albumId, userId}, String.class);
+        namedParams.put("id", id);
+        return namedParameterJdbcTemplate.query(sql, namedParams, new UserMapper()).get(0);
     }
 
-    public void setAlbumRating(int albumId, int userId, int rating) {
-        String sql = "insert into ALBUM_RATINGS (ALBUM_ID, USER_ID, ALBUM_RATING) values (?,?,?)";
-        jdbcTemplate.update(sql, new Object[]{albumId, userId, rating});
+    public String getAlbumRating(int albumId, String username) {
+        String sql = "select ALBUM_RATING FROM ALBUM_RATINGS WHERE ALBUM_ID = ? AND USERNAME = ?";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        try{
+            String result = jdbcTemplate.queryForObject(sql, new Object[]{albumId, username}, String.class);
+            return result;
+        }catch (Exception e){}
+        return "empty";
     }
 
+    public void setAlbumRating(int albumId, String username, int rating) {
+        String sql = "merge into ALBUM_RATINGS r1 USING (select :albumId ALBUM_ID, :username USERNAME  FROM dual) r2 " +
+                "ON (r1.USERNAME = r2.USERNAME AND r1.ALBUM_ID = r2.ALBUM_ID) " +
+                "WHEN MATCHED THEN UPDATE SET r1.ALBUM_RATING = :rating " +
+                "WHEN NOT MATCHED THEN INSERT (ALBUM_ID, USERNAME, ALBUM_RATING) values (:albumId,:username,:rating)";
+        //String sql = "insert into ALBUM_RATINGS (ALBUM_ID, USERNAME, ALBUM_RATING) values (?,?,?)";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("albumId", albumId);
+        namedParams.put("username", username);
+        namedParams.put("rating", rating);
+        namedParameterJdbcTemplate.update(sql, namedParams);
+    }
 
+    public void deleteAlbumRating(int albumId, String username) {
+
+        String sql = "delete from ALBUM_RATINGS where ALBUM_ID = ? AND USERNAME = ?";
+        jdbcTemplate.update(sql, new Object[]{albumId, username});
+
+    }
+
+    public String getTotalAlbumRating(int albumId) {
+        String sql = "select AVG(ALBUM_RATING) FROM ALBUM_RATINGS WHERE ALBUM_ID = ?";
+
+            String result = jdbcTemplate.queryForObject(sql, new Object[]{albumId}, String.class);
+            if (!(result == null)) return result;
+            else return "empty";
+    }
+
+    public void createReview(Review review){
+        String sql = "insert into ALBUM_REVIEWS (USER_ID, ALBUM_ID, REVIEW_TEXT, REVIEW_DATE) values (?,?,?,?)";
+        jdbcTemplate.update(sql, new Object[]{review.getUserId(), review.getAlbumId(), review.getText(), review.getDate()});
+    }
+
+    public Review getAlbumReview(int albumId, int userId) {
+        String sql = "select * from ALBUM_REVIEWS where USER_ID = :userId AND ALBUM_ID = :albumId";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("userId", userId);
+        namedParams.put("albumId", albumId);
+        List<Review> reviews =  namedParameterJdbcTemplate.query(sql, namedParams, new ReviewMapper());
+        if (!reviews.isEmpty()) return reviews.get(0);
+        else return null;
+    }
+
+    public List<Review> getReviews(int albumId) {
+        String sql = "SELECT * FROM ALBUM_REVIEWS WHERE ALBUM_ID = :albumId";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("albumId", albumId);
+        List<Review> reviews =  namedParameterJdbcTemplate.query(sql, namedParams, new ReviewMapper());
+        return reviews;
+    }
 
 
 }

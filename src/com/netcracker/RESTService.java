@@ -1,8 +1,6 @@
 package com.netcracker;
 
-import com.netcracker.Objects.Album;
-import com.netcracker.Objects.Artist;
-import com.netcracker.Objects.User;
+import com.netcracker.Objects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,18 +102,57 @@ public class RESTService {
 
     }
 
-    @GetMapping(value = "/rating/{userId,albumId}")
-    public ResponseEntity<String> getAlbumRating(@PathVariable("userId") int userId, @PathVariable("albumId")int albumId){
-
-        return new ResponseEntity<String>(service.getAlbumRating(albumId, userId), HttpStatus.OK);
+    @GetMapping(value = "/rating/{albumId}/{username}")
+    public ResponseEntity<String> getAlbumRating(@PathVariable("albumId")int albumId, @PathVariable("username") String username){
+        String response = service.getAlbumRating(albumId, username);
+        if (response != "empty") return new ResponseEntity<String>(response, HttpStatus.OK);
+        else return new ResponseEntity<String>("empty", HttpStatus.OK);
     }
 
-    @PostMapping(value = "/rating/{albumId,userId,rating}",consumes = "application/json")
-    public ResponseEntity<String> setAlbumRating(@PathVariable("userId") int userId, @PathVariable("albumId")int albumId,
-                                                 @PathVariable("rating") int rating){
-        service.setAlbumRating(userId, albumId, rating);
+    @PostMapping(value = "/rating/",consumes = "application/json")
+    public ResponseEntity<String> setAlbumRating(@RequestBody RatingRequest ratingRequest){
+        if(ratingRequest.getRating() == 0){
+            service.deleteAlbumRating(ratingRequest.getAlbumId(), ratingRequest.getUsername());
+        }else{
+            service.setAlbumRating(ratingRequest.getAlbumId(), ratingRequest.getUsername(), ratingRequest.getRating());
+        }
         return new ResponseEntity<String>("Rating updated", HttpStatus.OK);
     }
+
+    @GetMapping(value = "/rating/total/{albumId}")
+    public ResponseEntity<String> getAlbumRating(@PathVariable("albumId")int albumId){
+        String response = service.getTotalAlbumRating(albumId);
+        if (response != "empty") return new ResponseEntity<String>(response, HttpStatus.OK);
+        else return new ResponseEntity<String>("empty", HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/review/",consumes = "application/json")
+    public ResponseEntity<String> createReview(@RequestBody Review review){
+        service.createReview(review);
+        return new ResponseEntity<String>("Review created", HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/review/{albumId}/{username}")
+    public ResponseEntity<Review> getAlbumReview(@PathVariable("albumId")int albumId, @PathVariable("username") String username) {
+        Review response = service.getAlbumReview(albumId, username);
+        if (response != null) return new ResponseEntity<Review>(response, HttpStatus.OK);
+        else return new ResponseEntity<Review>(response, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/review/{albumId}",produces ="application/json" )
+    public ResponseEntity<List<Review>> getReviews(@PathVariable("albumId")int albumId){
+
+        List<Review> reviews = service.getReviews(albumId);
+
+        if (reviews.isEmpty())
+            return new ResponseEntity<List<Review>>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<List<Review>>(reviews, HttpStatus.OK);
+    }
+
+
+
+
 
 
 

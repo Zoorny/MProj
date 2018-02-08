@@ -21,14 +21,13 @@ function createXmlHttpRequestObject() {
     }else
         return xmlHttp;
 }
-var url = "http://localhost:8081/"
+var url = "http://localhost:8081/";
 
 function initializePage() {
     var loggedIn = getCookie("logged_in");
     if (loggedIn!=null)
     {
         var username = getCookie("username");
-
         var regButton = document.getElementById("sign-up");
         var logButton = document.getElementById("login-button");
         regButton.innerHTML = username;
@@ -71,6 +70,7 @@ function homeServerResponse() {
                 var tdelem3 = document.createElement('td');
                 var tdelem4 = document.createElement('td');
                 var tdelem5 = document.createElement('td');
+                var tdelem6 = document.createElement('td');
                 var image = document.createElement('img');
                 image.src = "images/" + resp[i].id +".jpg";
                 image.width = 200;
@@ -97,12 +97,14 @@ function homeServerResponse() {
                 tdelem3.innerHTML = "<a>" + resp[i].year +"</a>";
                 tdelem4.innerHTML = "<a>" + resp[i].description +"</a>";
                 tdelem5.appendChild(image);
+                tdelem6.innerHTML = "<a>" + resp[i].rating +"</a>";
 
                 trelem.appendChild(tdelem1);
                 trelem.appendChild(tdelem2);
                 trelem.appendChild(tdelem3);
                 trelem.appendChild(tdelem4);
                 trelem.appendChild(tdelem5);
+                trelem.appendChild(tdelem6);
                 table.appendChild(trelem);
 
             }
@@ -177,17 +179,19 @@ function getAlbum(id) {
     var loggedIn = getCookie("logged_in");
     if(loggedIn!='true'){
         document.getElementById('setRating').style.display='none';
+        document.getElementById('submitReview').style.display='none';
+        document.getElementById('yourReview').style.display='none';
     } else {
-        document.getElementById('ratingSelect').value = getRating(id);
+        getUserRating(id);
+        getUserReview(id);
         document.getElementById('setRating').style.display='inline';
     }
+    getReviews(id);
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
         xmlHttp.open("GET", "rest/album/" + id, true);
         xmlHttp.onreadystatechange  = albumServerResponse();
         xmlHttp.send(null);
-    }else {
-        setTimeout('getAlbum(id)',1000);
     }
 }
 function albumServerResponse() {
@@ -198,6 +202,7 @@ function albumServerResponse() {
             var table = document.getElementById("songsTable");
             clearTable(table);
             document.getElementById("albumTitle").innerHTML = resp.title;
+            document.getElementById("setRating").value = resp.id;
             var artist = document.getElementById("performer");
             artist.innerHTML = resp.artistName;
             artist.value = resp.artistId;
@@ -208,7 +213,7 @@ function albumServerResponse() {
             image.src = "images/" + resp.id +".jpg";
             image.width = 200;
             image.heigh = 200;
-
+            getTotalRating(resp.id);
             for (var i = 0; i < resp.songs.length; i++) {
 
                 var trelem = document.createElement('tr');
@@ -234,10 +239,72 @@ function albumServerResponse() {
         }
     }else setTimeout('albumServerResponse()',1000);
 }
-function getRating(id) {
-    return 7;
-}
 
+//Rating System
+function getUserRating(id) {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+        var username = getCookie("username");
+        xmlHttp.open("GET", "rest/rating/" + id +'/' + username, false);
+        xmlHttp.onreadystatechange  = function(){
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    if(xmlHttp.responseText != "empty"){
+                        var resp = JSON.parse(xmlHttp.responseText);
+                        document.getElementById('ratingSelect').value = resp;
+                    }else document.getElementById('ratingSelect').value = defaultStatus;
+
+
+                }
+            }
+        };
+        xmlHttp.send(null);
+    }else {
+        setTimeout('getUserRating(id)',1000);
+    }
+
+}
+function setRating() {
+    var rating =  document.getElementById("ratingSelect").value;
+    var album =  document.getElementById("setRating").value;
+    var username = getCookie("username");
+
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        xmlHttp.open("POST", "rest/rating/", true);
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+        xmlHttp.onreadystatechange  = function () {
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    getTotalRating(album);
+                }
+            }
+        };
+        var data = JSON.stringify({"albumId": album, "username": username, "rating": rating});
+        xmlHttp.send(data);
+    }else {
+        setTimeout('setRating()',1000);
+    }
+}
+function getTotalRating(id) {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+        xmlHttp.open("GET", "rest/rating/total/" + id, false);
+        xmlHttp.onreadystatechange  = function(){
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    if(xmlHttp.responseText != "empty"){
+                        var resp = JSON.parse(xmlHttp.responseText);
+                        document.getElementById('totalRating').innerHTML = resp;
+                    }else document.getElementById('totalRating').innerHTML = "n/a";
+
+
+                }
+            }
+        };
+        xmlHttp.send(null);
+    }else {
+        setTimeout('getTotalRating(id)',1000);
+    }
+}
 
 
 function recommendationsScript() {
@@ -287,6 +354,7 @@ function recommendationsResponse() {
                 var tdelem3 = document.createElement('td');
                 var tdelem4 = document.createElement('td');
                 var tdelem5 = document.createElement('td');
+                var tdelem6 = document.createElement('td');
                 var image = document.createElement('img');
                 image.src = "images/" + resp[i].id +".jpg";
                 image.width = 200;
@@ -313,12 +381,14 @@ function recommendationsResponse() {
                 tdelem3.innerHTML = resp[i].year;
                 tdelem4.innerHTML = resp[i].description;
                 tdelem5.appendChild(image);
+                tdelem6.innerHTML = resp[i].rating;
 
                 trelem.appendChild(tdelem1);
                 trelem.appendChild(tdelem2);
                 trelem.appendChild(tdelem3);
                 trelem.appendChild(tdelem4);
                 trelem.appendChild(tdelem5);
+                trelem.appendChild(tdelem6);
                 table.appendChild(trelem);
 
             }
@@ -327,6 +397,25 @@ function recommendationsResponse() {
     }else setTimeout('recommendationsResponse()',1000);
 }
 
+//Authorization
+function signUpShow(showhide) {
+    if(showhide== 'show'){
+        hideElements();
+        document.getElementById("signUpDiv").style.display = 'inline';
+    }
+
+    else {
+        document.getElementById("sign-up-form").style.display = 'none';
+    }
+}
+function loginShow(showhide) {
+    if(showhide== 'show'){
+        hideElements();
+        document.getElementById("loginDiv").style.display = 'inline';
+        document.getElementById("login-form").style.display = 'block';
+
+    }
+}
 function signUp() {
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
@@ -346,20 +435,157 @@ function signUp() {
 }
 function signUpResponse(){
 }
+function auth_user() {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        var username = document.getElementById("loginUsername").value;
+        var password = document.getElementById("loginPassword").value;
+        var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+        setCookie("username", username, 3600);
+        setCookie("password", password, 3600);
+        xmlHttp.open("POST", url + "login", true);
+        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        //xmlHttp.withCredentials = true;
+        //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+        xmlHttp.onreadystatechange  = auth_ok();
+        xmlHttp.send(body);
+    }
+    else setTimeout('auth_user()',1000);
+}
+function auth_ok() {
+    var text = document.getElementById("login-message");
+
+
+    if(xmlHttp.status == 200){
+        setCookie("logged_in", true, 3600);
+        loginShow('hide');
+        document.getElementById("login-form").style.display = 'none';
+        initializePage();
+        text.innerHTML = xmlHttp.responseText;
+        text.style.display = "block";
+    }
+
+    else if(xmlHttp.status == 401){
+        text.innerHTML = xmlHttp.responseText;
+        text.style.display = "block";
+    }
+
+    else setTimeout('auth_ok()',1000);
+}
+function logout() {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        xmlHttp.open("POST", url + "logout", true);
+        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        //xmlHttp.withCredentials = true;
+        //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+        xmlHttp.onreadystatechange  = function loggedOut(){
+
+            deleteCookie("username");
+            deleteCookie("password");
+            deleteCookie("logged_in");
+            var username = getCookie("username");
+            var password = getCookie("password");
+
+            var regButton = document.getElementById("sign-up");
+            var logButton = document.getElementById("login-button");
+            regButton.innerHTML = "Sign up";
+            regButton.setAttribute("onclick", "signUpShow('show')");
+            logButton.innerHTML = "Log in";
+            logButton.setAttribute("onclick","loginShow('show')");
+
+        };
+        xmlHttp.send(null);
+    }
+    else setTimeout('logout()',1000);
+}
 
 function advSearchScript() {
     hideElements();
     document.getElementById("advSearchDiv").style.display = 'block';
 }
 
-function signUpShow(showhide) {
-    if(showhide== 'show'){
-        hideElements();
-        document.getElementById("signUpDiv").style.display = 'inline';
+function createReview() {
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        var text = document.getElementById("user-review").value;
+        document.getElementById("user-review").value = "";
+        if (text == "") return;
+        var username = getCookie("username");
+        var albumId = document.getElementById("setRating").value;
+        console.log(albumId);
+        var date = new Date();
+
+        xmlHttp.open("POST", "rest/review/", true);
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+        xmlHttp.onreadystatechange  = function(){
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 201) {
+                    document.getElementById("submitReview").style.display='none';
+                    getUserReview(albumId);
+                }
+            }
+        };
+        var data = JSON.stringify({"username": username,"albumId": albumId, "text": text, "date": date});
+        xmlHttp.send(data);
+    }
+}
+function getUserReview(id) {
+    if (xmlHttp.readyState == 0 || xmlHttp.readyState == 4) {
+        var username = getCookie("username");
+        xmlHttp.open("GET", "rest/review/" + id + '/' + username, false);
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    var resp = JSON.parse(xmlHttp.responseText);
+                    document.getElementById("yourUsername").innerHTML = resp.username;
+                    document.getElementById("yourDate").innerHTML = resp.date;
+                    document.getElementById("yourDate").innerHTML = resp.date;
+                    document.getElementById("yourRating").innerHTML = resp.rating + "/10";
+                    document.getElementById("yourText").innerHTML = resp.text;
+                    document.getElementById("yourReview").style.display = 'block';
+                    document.getElementById("submitReview").style.display = 'none';
+                    }
+                else if (xmlHttp.status == 204){
+                    document.getElementById("yourReview").style.display = 'none';
+                    document.getElementById("submitReview").style.display = 'block';
+                }
+            }
+        };
+        xmlHttp.send(null);
     }
 
-    else {
-        document.getElementById("sign-up-form").style.display = 'none';
+}
+function getReviews(id) {
+    if (xmlHttp.readyState == 0 || xmlHttp.readyState == 4) {
+        xmlHttp.open("GET", "rest/review/" + id, false);
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    var response = JSON.parse(xmlHttp.responseText);
+                    var reviewContainer = document.getElementById("userReviews");
+                    if (isNaN(response.length)){
+                        var resp = [response];
+                    } else resp = response;
+                    while(reviewContainer.hasChildNodes())
+                    {
+                        reviewContainer.removeChild(reviewContainer.lastChild);
+                    }
+                    for (var i = 0; i < resp.length; i++){
+                        var div = document.createElement('div');
+                        div.innerHTML = "<div class='review'><p>" + resp[i].username +"</p>\n" +
+                            "<p>" + resp[i].date +"</p>\n" +
+                            "<p>" + resp[i].rating +"/10</p>\n" +
+                            "<p>" + resp[i].text +"</p>\n</div>";
+                        reviewContainer.appendChild(div);
+                    }
+                }
+                else if (xmlHttp.status == 204){
+                    document.getElementById("userReviews").style.display = 'none';
+                }
+            }
+        };
+        xmlHttp.send(null);
     }
 }
 
@@ -370,17 +596,7 @@ function clearTable(table) {
     }
 }
 
-function loginShow(showhide) {
-    if(showhide== 'show'){
-        hideElements();
-        document.getElementById("loginDiv").style.display = 'inline';
 
-    }
-
-    else {
-        document.getElementById("login-form").style.display = 'none';
-    }
-}
 
 function profile() {
     hideElements();
@@ -437,70 +653,6 @@ function hideElements() {
     document.getElementById("albumDiv").style.display = 'none';
 }
 
-function auth_user() {
-    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
-
-        var username = document.getElementById("loginUsername").value;
-        var password = document.getElementById("loginPassword").value;
-        var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
-        setCookie("username", username, 3600);
-        setCookie("password", password, 3600);
-        xmlHttp.open("POST", url + "login", true);
-        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        //xmlHttp.withCredentials = true;
-        //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-        xmlHttp.onreadystatechange  = auth_ok();
-        xmlHttp.send(body);
-    }
-    else setTimeout('auth_user()',1000);
-}
-function auth_ok() {
-    var text = document.getElementById("login-message");
-
-
-    if(xmlHttp.status == 200){
-        setCookie("logged_in", true, 3600);
-        loginShow('hide');
-        initializePage();
-        text.innerHTML = xmlHttp.responseText;
-        text.style.display = "block";
-    }
-
-    else if(xmlHttp.status == 401){
-        text.innerHTML = xmlHttp.responseText;
-        text.style.display = "block";
-    }
-
-    else setTimeout('auth_ok()',1000);
-}
-
-function logout() {
-    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
-
-        xmlHttp.open("POST", url + "logout", true);
-        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        //xmlHttp.withCredentials = true;
-        //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-        xmlHttp.onreadystatechange  = function loggedOut(){
-
-            deleteCookie("username");
-            deleteCookie("password");
-            deleteCookie("logged_in");
-            var username = getCookie("username");
-            var password = getCookie("password");
-
-            var regButton = document.getElementById("sign-up");
-            var logButton = document.getElementById("login-button");
-            regButton.innerHTML = "Sign up";
-            regButton.setAttribute("onclick", "signUpShow('show')");
-            logButton.innerHTML = "Log in";
-            logButton.setAttribute("onclick","loginShow('show')");
-
-        };
-        xmlHttp.send(null);
-    }
-    else setTimeout('logout()',1000);
-}
 
 //Cookies
 function setCookie(name, value, options) {
