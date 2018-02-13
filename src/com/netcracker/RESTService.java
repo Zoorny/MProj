@@ -120,10 +120,10 @@ public class RESTService {
     }
 
     @GetMapping(value = "/rating/total/{albumId}")
-    public ResponseEntity<String> getAlbumRating(@PathVariable("albumId")int albumId){
-        String response = service.getTotalAlbumRating(albumId);
-        if (response != "empty") return new ResponseEntity<String>(response, HttpStatus.OK);
-        else return new ResponseEntity<String>("empty", HttpStatus.OK);
+    public ResponseEntity<Integer> getAlbumRating(@PathVariable("albumId")int albumId){
+        int response = service.getTotalAlbumRating(albumId);
+        return new ResponseEntity<Integer>(response, HttpStatus.OK);
+
     }
 
     @PostMapping(value = "/review/",consumes = "application/json")
@@ -148,6 +148,13 @@ public class RESTService {
             return new ResponseEntity<List<Review>>(HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<List<Review>>(reviews, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/album/search")
+    public ResponseEntity<List<Album>> selectAlbums(@RequestBody AlbumRequest request){
+
+
+        return new ResponseEntity<List<Album>>(service.selectAlbums(request), HttpStatus.OK);
     }
 
 

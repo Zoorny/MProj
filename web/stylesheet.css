@@ -116,6 +116,20 @@ h2{
 #recommendationsResultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
 #recommendationsResultTable tr:nth-child(even) {background: #fff; padding: 0px}
 
+#advancedSearchResultTable {margin: 0 auto; width: 670px;}
+#advancedSearchResultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
+#advancedSearchResultTable tr:nth-child(even) {background: #fff; padding: 0px}
+
+
 h1{
     text-align: center;
 }
+
+#loginDiv{display: none}
+#homeDiv{display: none}
+#advSearchDiv{display: none}
+#signUpDiv{display: none}
+#recommendationsDiv{display: none}
+#profileDiv{display: none}
+#artistDiv{display: none}
+#albumDiv{display: none}

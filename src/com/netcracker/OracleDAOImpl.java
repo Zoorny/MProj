@@ -52,13 +52,13 @@ public class OracleDAOImpl implements OracleDAO {
     }
 
     public List<Album> getAlbums(){
-        String sql = "SELECT album_id,artist_name,album_title,album_year,album_desc,albums.artist_id" +
+        String sql = "SELECT album_id,artist_name,album_title,album_year,album_desc,albums.artist_id, albums.album_genre" +
                 " FROM albums, artists WHERE albums.artist_id = artists.artist_id";
         return namedParameterJdbcTemplate.query(sql, new AlbumMapper());
     }
 
     public Album getAlbumById(int id) {
-        String sql = "select album_id,artist_name,album_title,album_year,album_desc,albums.artist_id" +
+        String sql = "select album_id,artist_name,album_title,album_year,album_desc,albums.artist_id, albums.ALBUM_GENRE" +
                 " from ALBUMS, ARTISTS where ALBUM_ID = :id AND albums.artist_id = artists.artist_id";
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("id", id);
@@ -120,12 +120,13 @@ public class OracleDAOImpl implements OracleDAO {
 
     }
 
-    public String getTotalAlbumRating(int albumId) {
+    public int getTotalAlbumRating(int albumId) {
         String sql = "select AVG(ALBUM_RATING) FROM ALBUM_RATINGS WHERE ALBUM_ID = ?";
 
-            String result = jdbcTemplate.queryForObject(sql, new Object[]{albumId}, String.class);
-            if (!(result == null)) return result;
-            else return "empty";
+            Integer result =jdbcTemplate.queryForObject(sql, new Object[]{albumId}, Integer.class);
+            if (result != null) return result;
+            else return 0;
+
     }
 
     public void createReview(Review review){
@@ -149,6 +150,40 @@ public class OracleDAOImpl implements OracleDAO {
         namedParams.put("albumId", albumId);
         List<Review> reviews =  namedParameterJdbcTemplate.query(sql, namedParams, new ReviewMapper());
         return reviews;
+    }
+
+    public List<Album> selectAlbums(AlbumRequest request){
+
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("genres", request.getGenres());
+        if (request.getMinDate() == 0) namedParams.put("minDate", "0");
+        else namedParams.put("minDate", request.getMinDate());
+        if (request.getMaxDate() == 0) namedParams.put("maxDate", "3000");
+        else namedParams.put("maxDate", request.getMaxDate());
+
+        String sql = "SELECT albums.album_id, ARTISTS.artist_name, albums.album_title,albums.album_year,albums.album_desc,albums.artist_id, albums.album_genre" +
+                " FROM albums, artists" +
+                " WHERE albums.artist_id = artists.artist_id" +
+                " AND ALBUM_YEAR>= :minDate AND ALBUM_YEAR<= :maxDate" ;
+        if(request.getGenres().length != 0){
+            sql+=" AND (";
+            for (int i=0; i< request.getGenres().length; i++) {
+
+                sql += " albums.ALBUM_GENRE = " + "'" + request.getGenres()[i] + "'";
+                if(!(request.getGenres().length == i+1)){
+                    sql+= " OR";
+                } else sql+=")";
+            }
+        }
+
+
+/*        if(request.getArtist() != null) {
+            namedParams.put("artist", request.getArtist());
+            sql+= " AND "
+        }*/
+        List<Album> albums =  namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper());
+
+        return albums;
     }
 
 

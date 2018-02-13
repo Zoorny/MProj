@@ -45,6 +45,7 @@
                     <td>description</td>
                     <td>img</td>
                     <td>rating</td>
+                    <td>genre</td>
                 </tr>
             </table>
         </div>
@@ -62,6 +63,7 @@
                     <td>description</td>
                     <td>img</td>
                     <td>rating</td>
+                    <td>genre</td>
                 </tr>
             </table>
         </div>
@@ -111,56 +113,56 @@
         <div class="sidebar">
 
             <section class="filter-genres">
-                <header><h3>Genres &amp; Styles</h3></header>
+                <header><h3>Genres</h3></header>
                 <div class="tab-content">
                     <div class="genreOptions">
                         <ul>
-                            <li class="genre">
-                                <input type="checkbox" id="blues">
+                            <li>
+                                <input class="genre" type="checkbox" value="Blues" id="blues">
                                 <label for="blues">Blues</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="classical">
+                            <li>
+                                <input class="genre" type="checkbox" value="Classical" id="classical">
                                 <label for="classical">Classical</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="country">
+                            <li>
+                                <input class="genre" type="checkbox" value="Country" id="country">
                                 <label for="country">Country</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="electronic">
+                            <li>
+                                <input class="genre" type="checkbox" value="Electronic" id="electronic">
                                 <label for="electronic">Electronic</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="folk">
+                            <li>
+                                <input class="genre" type="checkbox" value="Folk" id="folk">
                                 <label for="folk">Folk</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="jazz">
+                            <li>
+                                <input class="genre" type="checkbox" value="Jazz" id="jazz">
                                 <label for="jazz">Jazz</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="newAge">
+                            <li>
+                                <input class="genre" type="checkbox" value="NewAge" id="newAge">
                                 <label for="newAge">New Age</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="pop">
+                            <li>
+                                <input class="genre" type="checkbox" value="Pop" id="pop">
                                 <label for="pop">Pop</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="rock">
+                            <li>
+                                <input class="genre" type="checkbox" value="Rock" id="rock">
                                 <label for="rock">Rock</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="r&b">
+                            <li>
+                                <input class="genre" type="checkbox" value="R&B" id="r&b">
                                 <label for="r&b">R&B</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="rap">
+                            <li>
+                                <input class="genre" type="checkbox" value="Rap" id="rap">
                                 <label for="rap">Rap</label>
                             </li>
-                            <li class="genre">
-                                <input type="checkbox" id="reggae">
+                            <li>
+                                <input class="genre" type="checkbox" value="Reggae"  id="reggae">
                                 <label for="reggae">Reggae</label>
                             </li>
                         </ul>
@@ -171,7 +173,7 @@
                 <h3>Release Date</h3>
                 <div class="tab-content">
                     <div class="options">
-                        <select class="start-year" name="start-year">
+                        <select id="start-year" name="start-year">
                             <option></option>
                             <option value="2018">2018</option>
                             <option value="2017">2017</option>
@@ -274,7 +276,7 @@
                             <option value="1920">1920</option>
                         </select>
                         TO
-                        <select class="end-year" name="end-year">
+                        <select id="end-year" name="end-year">
                             <option></option>
                             <option value="2018">2018</option>
                             <option value="2017">2017</option>
@@ -384,7 +386,7 @@
                 <h3>Rating</h3>
                 <div class="tab-content">
                     <div class="options">
-                        <select class="min-rating">
+                        <select id="min-rating">
                             <option></option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -398,7 +400,7 @@
                             <option value="10">10</option>
                         </select>
                         TO
-                        <select class="max-rating">
+                        <select id="max-rating">
                             <option></option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -418,11 +420,23 @@
                 <h3>Artist</h3>
                 <div class="tab-content">
                     <div class="tab-content">
-                        <input type="text" placeholder="type to filter artists by name">
+                        <input id = "artist" type="text" placeholder="type to filter artists by name">
                     </div>
                 </div>
 
-            </section>
+            </section><br/>
+            <button value="Search" onclick="advancedSearchRequest()">Search</button>
+        </div>
+        <div class="results">
+            <table id="advancedSearchResultTable">
+                <tr>
+                    <td>img</td>
+                    <td>year</td>
+                    <td>artist</td>
+                    <td>album</td>
+                    <td>rating</td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -444,16 +458,17 @@
     </div>
 
     <div id="albumDiv">
-        <h1 id="albumTitle"></h1>
-        <img id="albumImage"><br/>
-        Performer: <label id="performer"></label><br/>
-        Year: <label id="albumYear"></label><br/>
-        Description: <p id="albumDescription"></p>
-        Total rating: <label id="totalRating"></label><br/>
+    <h1 id="albumTitle"></h1>
+    <img id="albumImage"><br/>
+    Performer: <label id="performer"></label><br/>
+    Year: <label id="albumYear"></label><br/>
+    Genre: <label id="albumGenre"></label><br/>
+    Description: <p id="albumDescription"></p>
+    Total rating: <label id="totalRating"></label><br/>
 
-        <div id="setRating" onchange="setRating()">
-            Your Rating:
-            <select id="ratingSelect">
+    <div id="setRating" onchange="setRating()">
+        Your Rating:
+        <select id="ratingSelect">
             <option></option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -466,43 +481,43 @@
             <option value="9">9</option>
             <option value="10">10</option>
         </select>
-        </div>
-
-        <div id="reviews">
-           <div id="submitReview">
-               <h3>Your Review</h3>
-               <textarea name="user-review" id="user-review" class="user-review-box"></textarea><br/>
-               <input type="button" value="Submit Review" onclick="createReview()">
-           </div>
-            <div id="yourReview">
-                <h3>Your Review</h3>
-                <div id="yourReviewInfo">
-                    <p id="yourUsername"></p>
-                    <p id="yourDate"></p>
-                    <p id="yourRating"></p>
-                    <p id="yourText"></p>
-                </div>
-            </div>
-           <div id="userReviews">
-               <h3>User Reviews</h3>
-               <div class="userReviewResults">
-
-               </div>
-           </div>
-        </div>
-        <div id="songsDiv">
-            <h1>Tracklist</h1>
-            <table id="songsTable">
-                <tr>
-                    <td></td>
-                    <td>Title</td>
-                    <td>Performer</td>
-                    <td>Time</td>
-                </tr>
-            </table>
-        </div>
-
     </div>
+
+    <div id="reviews">
+        <div id="submitReview">
+            <h3>Your Review</h3>
+            <textarea name="user-review" id="user-review" class="user-review-box"></textarea><br/>
+            <input type="button" value="Submit Review" onclick="createReview()">
+        </div>
+        <div id="yourReview">
+            <h3>Your Review</h3>
+            <div id="yourReviewInfo">
+                <p id="yourUsername"></p>
+                <p id="yourDate"></p>
+                <p id="yourRating"></p>
+                <p id="yourText"></p>
+            </div>
+        </div>
+        <div id="userReviews">
+            <h3>User Reviews</h3>
+            <div class="userReviewResults">
+
+            </div>
+        </div>
+    </div>
+    <div id="songsDiv">
+        <h1>Tracklist</h1>
+        <table id="songsTable">
+            <tr>
+                <td></td>
+                <td>Title</td>
+                <td>Performer</td>
+                <td>Time</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
 
 
 

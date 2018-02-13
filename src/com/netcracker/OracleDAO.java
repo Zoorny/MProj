@@ -1,8 +1,5 @@
 package com.netcracker;
-import com.netcracker.Objects.Album;
-import com.netcracker.Objects.Artist;
-import com.netcracker.Objects.Review;
-import com.netcracker.Objects.User;
+import com.netcracker.Objects.*;
 
 import java.util.List;
 
@@ -23,10 +20,12 @@ public interface OracleDAO {
     String getAlbumRating(int albumId, String username);
     void setAlbumRating(int albumId, String username, int rating);
     void deleteAlbumRating(int albumId, String username);
-    String getTotalAlbumRating(int albumId);
+    int getTotalAlbumRating(int albumId);
 
     void createReview(Review review);
     Review getAlbumReview(int albumId, int userId);
     List<Review> getReviews(int albumId);
+
+    List<Album> selectAlbums(AlbumRequest request);
 
 }

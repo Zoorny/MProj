@@ -1,9 +1,6 @@
 package com.netcracker;
 
-import com.netcracker.Objects.Album;
-import com.netcracker.Objects.Artist;
-import com.netcracker.Objects.Review;
-import com.netcracker.Objects.User;
+import com.netcracker.Objects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -38,7 +35,7 @@ public class ServiceImpl implements Service {
     public List<Album> getAlbums() {
         List<Album> albums = oracleDAO.getAlbums();
         for(int i = 0; i< albums.size(); i++ ){
-            String rating = oracleDAO.getTotalAlbumRating(albums.get(i).getId());
+            int rating = oracleDAO.getTotalAlbumRating(albums.get(i).getId());
             albums.get(i).setRating(rating);
         }
         return albums;
@@ -64,7 +61,7 @@ public class ServiceImpl implements Service {
         oracleDAO.deleteAlbumRating(albumId, username);
     }
 
-    public String getTotalAlbumRating(int albumId) {
+    public int getTotalAlbumRating(int albumId) {
         return oracleDAO.getTotalAlbumRating(albumId);
     }
 
@@ -104,6 +101,41 @@ public class ServiceImpl implements Service {
         
         
         return reviews;
+    }
+
+    public List<Album> selectAlbums(AlbumRequest request) {
+        if (request.getMinRating() == 0) request.setMinRating(0);
+        if (request.getMaxRating() == 0) request.setMaxRating(10);
+        System.out.println(request.getMinRating());
+        System.out.println(request.getMaxRating());
+
+
+        List<Album> response = new ArrayList<Album>();
+        List<Album> albums = oracleDAO.selectAlbums(request);
+        for (Album album :
+                albums) {
+            System.out.println(album.getId());
+            int rating = oracleDAO.getTotalAlbumRating(album.getId());
+            if (rating == 0 &&(request.getMinRating() == 0)&&(request.getMaxRating() == 10)){
+                response.add(album);
+            }else{
+                album.setRating(rating);
+                System.out.println(rating);
+                    try {
+                        if ((rating >= request.getMinRating()) && rating <= request.getMaxRating()) {
+                            response.add(album);
+                        }
+                    }catch (NumberFormatException e){
+                        System.out.println("Exception");
+                    }
+
+            }
+        }
+
+
+
+        return response;
+
     }
 
 

@@ -12,7 +12,8 @@ public class Album {
     private String description;
     private int artistId;
     private List<Song> songs;
-    private String rating;
+    private int rating;
+    private String genre;
 
     public int getId() {
         return id;
@@ -70,23 +71,20 @@ public class Album {
         this.songs = songs;
     }
 
-    public String getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
-    @Override
-    public String toString() {
-        return "Album{" +
-                "id=" + id +
-                ", artistName='" + artistName + '\'' +
-                ", title='" + title + '\'' +
-                ", year=" + year +
-                ", description='" + description + '\'' +
-                ", artistId=" + artistId +
-                '}';
+    public String getGenre() {
+        return genre;
     }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
 }

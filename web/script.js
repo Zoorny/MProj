@@ -71,6 +71,7 @@ function homeServerResponse() {
                 var tdelem4 = document.createElement('td');
                 var tdelem5 = document.createElement('td');
                 var tdelem6 = document.createElement('td');
+                var tdelem7 = document.createElement('td');
                 var image = document.createElement('img');
                 image.src = "images/" + resp[i].id +".jpg";
                 image.width = 200;
@@ -98,6 +99,7 @@ function homeServerResponse() {
                 tdelem4.innerHTML = "<a>" + resp[i].description +"</a>";
                 tdelem5.appendChild(image);
                 tdelem6.innerHTML = "<a>" + resp[i].rating +"</a>";
+                tdelem7.innerHTML = "<a>" + resp[i].genre +"</a>";
 
                 trelem.appendChild(tdelem1);
                 trelem.appendChild(tdelem2);
@@ -105,6 +107,7 @@ function homeServerResponse() {
                 trelem.appendChild(tdelem4);
                 trelem.appendChild(tdelem5);
                 trelem.appendChild(tdelem6);
+                trelem.appendChild(tdelem7);
                 table.appendChild(trelem);
 
             }
@@ -157,7 +160,7 @@ function artistServerResponse() {
                 refElement3.setAttribute('onclick', 'getAlbum(this.value)');
                 tdelem3.appendChild(refElement3);
 
-                tdelem4.innerHTML = "";
+                tdelem4.innerHTML = resp.rating;
 
 
                 trelem.appendChild(tdelem1);
@@ -203,6 +206,7 @@ function albumServerResponse() {
             clearTable(table);
             document.getElementById("albumTitle").innerHTML = resp.title;
             document.getElementById("setRating").value = resp.id;
+            document.getElementById("albumGenre").innerHTML = resp.genre;
             var artist = document.getElementById("performer");
             artist.innerHTML = resp.artistName;
             artist.value = resp.artistId;
@@ -355,6 +359,7 @@ function recommendationsResponse() {
                 var tdelem4 = document.createElement('td');
                 var tdelem5 = document.createElement('td');
                 var tdelem6 = document.createElement('td');
+                var tdelem7 = document.createElement('td');
                 var image = document.createElement('img');
                 image.src = "images/" + resp[i].id +".jpg";
                 image.width = 200;
@@ -382,6 +387,7 @@ function recommendationsResponse() {
                 tdelem4.innerHTML = resp[i].description;
                 tdelem5.appendChild(image);
                 tdelem6.innerHTML = resp[i].rating;
+                tdelem7.innerHTML = resp[i].genre;
 
                 trelem.appendChild(tdelem1);
                 trelem.appendChild(tdelem2);
@@ -389,6 +395,7 @@ function recommendationsResponse() {
                 trelem.appendChild(tdelem4);
                 trelem.appendChild(tdelem5);
                 trelem.appendChild(tdelem6);
+                trelem.appendChild(tdelem7);
                 table.appendChild(trelem);
 
             }
@@ -441,12 +448,10 @@ function auth_user() {
         var username = document.getElementById("loginUsername").value;
         var password = document.getElementById("loginPassword").value;
         var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
-        setCookie("username", username, 3600);
-        setCookie("password", password, 3600);
         xmlHttp.open("POST", url + "login", true);
         xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        //xmlHttp.withCredentials = true;
-        //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+/*        xmlHttp.withCredentials = true;
+        xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));*/
         xmlHttp.onreadystatechange  = auth_ok();
         xmlHttp.send(body);
     }
@@ -457,6 +462,10 @@ function auth_ok() {
 
 
     if(xmlHttp.status == 200){
+        var username = document.getElementById("loginUsername").value;
+        var password = document.getElementById("loginPassword").value;
+        setCookie("username", username, 3600);
+        setCookie("password", password, 3600);
         setCookie("logged_in", true, 3600);
         loginShow('hide');
         document.getElementById("login-form").style.display = 'none';
@@ -484,11 +493,11 @@ function logout() {
             deleteCookie("username");
             deleteCookie("password");
             deleteCookie("logged_in");
-            var username = getCookie("username");
-            var password = getCookie("password");
 
             var regButton = document.getElementById("sign-up");
             var logButton = document.getElementById("login-button");
+            document.getElementById("login-message").style.display = 'none';
+            document.getElementById("login-form").style.display = 'block';
             regButton.innerHTML = "Sign up";
             regButton.setAttribute("onclick", "signUpShow('show')");
             logButton.innerHTML = "Log in";
@@ -503,6 +512,104 @@ function logout() {
 function advSearchScript() {
     hideElements();
     document.getElementById("advSearchDiv").style.display = 'block';
+}
+function advancedSearchRequest() {
+    var minDate = document.getElementById("start-year").value;
+    var maxDate = document.getElementById("end-year").value;
+    var minRating = document.getElementById("min-rating").value;
+    var maxRating = document.getElementById("max-rating").value;
+
+    if(minDate =="") minDate = 1;
+    if(maxDate =="") maxDate = 10000;
+    if(minRating =="") minRating = 0;
+    if(maxRating =="") maxRating = 0;
+
+    var genres = [];
+    var cboxes = document.getElementsByClassName('genre');
+    var j =0;
+    for (var i=0; i<cboxes.length; i++) {
+
+            if(cboxes[i].checked == true){
+                genres[j] = cboxes[i].value;
+                j++;
+            }
+    }
+
+    //var genres = document.querySelector('.genre:checked').value;
+    var artist = document.getElementById("artist").value;
+
+
+    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+
+        xmlHttp.open("POST", "rest/album/search", true);
+        xmlHttp.setRequestHeader("Content-type", "application/json");
+        xmlHttp.onreadystatechange  = advancedSearchServerResponse();
+        var data = JSON.stringify({"genres": genres, "minDate": minDate, "maxDate": maxDate, "minRating": minRating, "maxRating":maxRating, "artist":artist});
+        xmlHttp.send(data);
+    }else {
+        setTimeout('advancedSearchRequest()',1000);
+    }
+
+}
+function advancedSearchServerResponse() {
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 200) {
+            var response = JSON.parse(xmlHttp.responseText);
+            var table = document.getElementById("advancedSearchResultTable");
+            clearTable(table);
+
+            if (isNaN(response.length)){
+                var resp = [response];
+            } else resp = response;
+
+            for (var i = 0; i < resp.length; i++) {
+
+                var trelem = document.createElement('tr');
+                var image = document.createElement('img');
+                var tdelem0 = document.createElement('td');
+                var tdelem1 = document.createElement('td');
+                var tdelem2 = document.createElement('td');
+                var tdelem3 = document.createElement('td');
+                var tdelem4 = document.createElement('td');
+
+
+
+                image.src = "images/" + resp[i].id +".jpg";
+                image.width = 100;
+                image.heigh = 100;
+
+                var artist = resp[i].artistName;
+                var album = resp[i].title;
+
+
+                var refElement1 = document.createElement('a');
+                refElement1.setAttribute('class', 'tableRef');
+                refElement1.innerHTML = artist;
+                refElement1.value = resp[i].artistId;
+                refElement1.setAttribute('onclick', 'getArtist(this.value)');
+                tdelem2.appendChild(refElement1);
+
+                var refElement2 = document.createElement('a');
+                refElement2.setAttribute('class', 'tableRef');
+                refElement2.innerHTML = album;
+                refElement2.value = resp[i].id;
+                refElement2.setAttribute('onclick', 'getAlbum(this.value)');
+                tdelem3.appendChild(refElement2);
+
+                tdelem1.innerHTML = "<a>" + resp[i].year +"</a>";
+                tdelem0.appendChild(image);
+                tdelem4.innerHTML = "<a>" + resp[i].rating +"</a>";
+
+                trelem.appendChild(tdelem0);
+                trelem.appendChild(tdelem1);
+                trelem.appendChild(tdelem2);
+                trelem.appendChild(tdelem3);
+                trelem.appendChild(tdelem4);
+                table.appendChild(trelem);
+
+            }
+        }
+    }else setTimeout('advancedSearchServerResponse()',1000);
 }
 
 function createReview() {
@@ -683,14 +790,12 @@ function setCookie(name, value, options) {
 
     document.cookie = updatedCookie;
 }
-
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
-
 function deleteCookie(name) {
     setCookie(name, "", {
         expires: -1
