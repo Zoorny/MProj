@@ -328,7 +328,7 @@ function recommendationsScript() {
         var username = getCookie("username");
         var password = getCookie("password");
 
-        xmlHttp.open("GET", "rest/recommendations/", true);
+        xmlHttp.open("GET", "rest/recommendations/" + username, true);
         //xmlHttp.setRequestHeader(requestHeaderAuth);
         //var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
         //xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -489,20 +489,21 @@ function logout() {
         //xmlHttp.withCredentials = true;
         //xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
         xmlHttp.onreadystatechange  = function loggedOut(){
+            if (xmlHttp.readyState==4){
+                deleteCookie("username");
+                deleteCookie("password");
+                deleteCookie("logged_in");
 
-            deleteCookie("username");
-            deleteCookie("password");
-            deleteCookie("logged_in");
-
-            var regButton = document.getElementById("sign-up");
-            var logButton = document.getElementById("login-button");
-            document.getElementById("login-message").style.display = 'none';
-            document.getElementById("login-form").style.display = 'block';
-            regButton.innerHTML = "Sign up";
-            regButton.setAttribute("onclick", "signUpShow('show')");
-            logButton.innerHTML = "Log in";
-            logButton.setAttribute("onclick","loginShow('show')");
-
+                var regButton = document.getElementById("sign-up");
+                var logButton = document.getElementById("login-button");
+                document.getElementById("login-message").style.display = 'none';
+                document.getElementById("login-form").style.display = 'block';
+                regButton.innerHTML = "Sign up";
+                regButton.setAttribute("onclick", "signUpShow('show')");
+                logButton.innerHTML = "Log in";
+                logButton.setAttribute("onclick","loginShow('show')");
+                window.location.reload(false);
+            }
         };
         xmlHttp.send(null);
     }
@@ -518,6 +519,7 @@ function advancedSearchRequest() {
     var maxDate = document.getElementById("end-year").value;
     var minRating = document.getElementById("min-rating").value;
     var maxRating = document.getElementById("max-rating").value;
+    var artist = document.getElementById("artist").value;
 
     if(minDate =="") minDate = 1;
     if(maxDate =="") maxDate = 10000;
@@ -535,16 +537,13 @@ function advancedSearchRequest() {
             }
     }
 
-    //var genres = document.querySelector('.genre:checked').value;
-    var artist = document.getElementById("artist").value;
-
 
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
 
         xmlHttp.open("POST", "rest/album/search", true);
         xmlHttp.setRequestHeader("Content-type", "application/json");
         xmlHttp.onreadystatechange  = advancedSearchServerResponse();
-        var data = JSON.stringify({"genres": genres, "minDate": minDate, "maxDate": maxDate, "minRating": minRating, "maxRating":maxRating, "artist":artist});
+        var data = JSON.stringify({"artistName":artist ,"genres": genres, "minDate": minDate, "maxDate": maxDate, "minRating": minRating, "maxRating":maxRating});
         xmlHttp.send(data);
     }else {
         setTimeout('advancedSearchRequest()',1000);
@@ -810,5 +809,6 @@ function num(val){
     val = Math.floor(val);
     return val < 10 ? '0' + val : val;
 }
+
 
 

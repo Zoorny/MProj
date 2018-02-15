@@ -1,4 +1,4 @@
-package com.netcracker.Objects;
+package com.netcracker.Model.Objects;
 
 public class Song {
     private String title;

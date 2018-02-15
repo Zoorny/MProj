@@ -1,16 +1,16 @@
-package com.netcracker;
+package com.netcracker.Controller;
 
-import com.netcracker.Objects.*;
+import com.netcracker.Model.Objects.*;
+import com.netcracker.Service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-public class RESTService {
+public class RESTController {
 
     @Autowired
     Service service;
@@ -80,10 +80,10 @@ public class RESTService {
         return new ResponseEntity<String>("User created", HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/recommendations",produces ="application/json" )
-    public ResponseEntity<List<Album>> getRecommendations(){
+    @GetMapping(value = "/recommendations/{username}",produces ="application/json" )
+    public ResponseEntity<List<Album>> getRecommendations(@PathVariable("username") String username){
 
-        List<Album> albums = service.getAlbums();
+        List<Album> albums = service.getRecommendations(username);
 
         if (albums.isEmpty())
             return new ResponseEntity<List<Album>>(HttpStatus.NO_CONTENT);
@@ -152,8 +152,6 @@ public class RESTService {
 
     @PostMapping(value = "/album/search")
     public ResponseEntity<List<Album>> selectAlbums(@RequestBody AlbumRequest request){
-
-
         return new ResponseEntity<List<Album>>(service.selectAlbums(request), HttpStatus.OK);
     }
 

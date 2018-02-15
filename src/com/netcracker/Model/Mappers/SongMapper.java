@@ -1,6 +1,6 @@
-package com.netcracker.Mappers;
+package com.netcracker.Model.Mappers;
 
-import com.netcracker.Objects.Song;
+import com.netcracker.Model.Objects.Song;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

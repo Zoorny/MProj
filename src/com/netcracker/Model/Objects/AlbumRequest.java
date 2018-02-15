@@ -1,4 +1,4 @@
-package com.netcracker.Objects;
+package com.netcracker.Model.Objects;
 
 public class AlbumRequest {
     private String[] genres;
@@ -6,7 +6,8 @@ public class AlbumRequest {
     private int maxDate;
     private int minRating;
     private int maxRating;
-    private String artist;
+    private String artistName;
+
 
     public String[] getGenres() {
         return genres;
@@ -49,12 +50,11 @@ public class AlbumRequest {
         this.maxRating = maxRating;
     }
 
-    public String getArtist() {
-        return artist;
+    public String getArtistName() {
+        return artistName;
     }
 
-    public void setArtist(String artists) {
-        this.artist = artist;
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
     }
-
 }

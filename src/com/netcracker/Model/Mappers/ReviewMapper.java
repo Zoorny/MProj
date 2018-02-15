@@ -1,6 +1,6 @@
-package com.netcracker.Mappers;
+package com.netcracker.Model.Mappers;
 
-import com.netcracker.Objects.Review;
+import com.netcracker.Model.Objects.Review;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

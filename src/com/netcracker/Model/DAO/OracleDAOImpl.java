@@ -1,7 +1,7 @@
-package com.netcracker;
+package com.netcracker.Model.DAO;
 
-import com.netcracker.Mappers.*;
-import com.netcracker.Objects.*;
+import com.netcracker.Model.Mappers.*;
+import com.netcracker.Model.Objects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -164,7 +164,7 @@ public class OracleDAOImpl implements OracleDAO {
         String sql = "SELECT albums.album_id, ARTISTS.artist_name, albums.album_title,albums.album_year,albums.album_desc,albums.artist_id, albums.album_genre" +
                 " FROM albums, artists" +
                 " WHERE albums.artist_id = artists.artist_id" +
-                " AND ALBUM_YEAR>= :minDate AND ALBUM_YEAR<= :maxDate" ;
+                " AND ALBUM_YEAR>= :minDate AND ALBUM_YEAR<= :maxDate";
         if(request.getGenres().length != 0){
             sql+=" AND (";
             for (int i=0; i< request.getGenres().length; i++) {
@@ -176,14 +176,48 @@ public class OracleDAOImpl implements OracleDAO {
             }
         }
 
-
-/*        if(request.getArtist() != null) {
-            namedParams.put("artist", request.getArtist());
-            sql+= " AND "
-        }*/
+        if(request.getArtistName() != null && request.getArtistName() != "") {
+            namedParams.put("artist", request.getArtistName());
+            sql+= " AND ARTISTS.artist_name = :artist";
+        }
         List<Album> albums =  namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper());
 
         return albums;
+    }
+
+
+    public Map<String, Integer> getPreferences(String username) {
+
+        Map<String, Integer> prefMap = new HashMap<>();
+        String sql = "SELECT AVG(ALBUM_RATING), ALBUMS.ALBUM_GENRE  FROM ALBUM_RATINGS, ALBUMS" +
+        " WHERE ALBUM_RATINGS.USERNAME = :username" +
+        " AND ALBUM_RATINGS.ALBUM_ID = ALBUMS.ALBUM_ID" +
+        " GROUP BY ALBUMS.ALBUM_GENRE";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("username", username);
+        List<Preferences> preferences =  namedParameterJdbcTemplate.query(sql, namedParams, new PreferencesMapper());
+
+        for (Preferences preference :
+                preferences) {
+            prefMap.put(preference.getGenre(), preference.getRating());
+        }
+        return prefMap;
+    }
+
+    @Override
+    public List<Album> getRatedAlbums(String username) {
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("username", username);
+        String sql = "SELECT ALBUMS.album_id,ARTISTS.artist_name,ALBUMS.album_title,ALBUMS.album_year,ALBUMS.album_desc,albums.artist_id, albums.album_genre" +
+                " FROM albums, artists, ALBUM_RATINGS WHERE albums.artist_id = artists.artist_id AND ALBUM_RATINGS.USERNAME = :username AND ALBUMS.ALBUM_ID=ALBUM_RATINGS.ALBUM_ID";
+        return namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper());
+/*        String sql = "SELECT * FROM ARTISTS";
+
+
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("username", username);
+        List<Album> albums =  namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper());
+        return albums;*/
     }
 
 

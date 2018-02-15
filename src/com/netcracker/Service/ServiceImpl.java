@@ -1,10 +1,10 @@
-package com.netcracker;
+package com.netcracker.Service;
 
-import com.netcracker.Objects.*;
+import com.netcracker.Model.Objects.*;
+import com.netcracker.Model.DAO.OracleDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @org.springframework.stereotype.Service
 public class ServiceImpl implements Service {
@@ -106,21 +106,18 @@ public class ServiceImpl implements Service {
     public List<Album> selectAlbums(AlbumRequest request) {
         if (request.getMinRating() == 0) request.setMinRating(0);
         if (request.getMaxRating() == 0) request.setMaxRating(10);
-        System.out.println(request.getMinRating());
-        System.out.println(request.getMaxRating());
-
 
         List<Album> response = new ArrayList<Album>();
         List<Album> albums = oracleDAO.selectAlbums(request);
         for (Album album :
                 albums) {
-            System.out.println(album.getId());
+
             int rating = oracleDAO.getTotalAlbumRating(album.getId());
             if (rating == 0 &&(request.getMinRating() == 0)&&(request.getMaxRating() == 10)){
                 response.add(album);
             }else{
                 album.setRating(rating);
-                System.out.println(rating);
+
                     try {
                         if ((rating >= request.getMinRating()) && rating <= request.getMaxRating()) {
                             response.add(album);
@@ -128,14 +125,43 @@ public class ServiceImpl implements Service {
                     }catch (NumberFormatException e){
                         System.out.println("Exception");
                     }
-
             }
         }
-
-
-
         return response;
+    }
 
+    public List<Album> getRecommendations(String username){
+        Map<String, Integer> preferences = oracleDAO.getPreferences(username);
+        List<Album> albums = oracleDAO.getAlbums();
+        List<Album> result = new ArrayList<>();
+        List<Album> rated = oracleDAO.getRatedAlbums(username);
+
+
+        for(int i=0; i<rated.size(); i++){
+            int rating = oracleDAO.getTotalAlbumRating(rated.get(i).getId());
+            rated.get(i).setRating(rating);
+        }
+
+        for(int i = 0; i< albums.size(); i++ ){
+            int rating = oracleDAO.getTotalAlbumRating(albums.get(i).getId());
+
+            albums.get(i).setRating(rating);
+
+            if(rating > 3 && (preferences.get(albums.get(i).getGenre()) != null) && (preferences.get(albums.get(i).getGenre()) >= 5)) {
+                result.add(albums.get(i));
+            }
+        }
+        System.out.println(rated);
+        System.out.println(result);
+        result.removeAll(rated);
+        System.out.println(result);
+        System.out.println(rated);
+        result.sort(new Comparator<Album>() {
+            public int compare(Album o1, Album o2) {
+                return (o2.getRating()-o1.getRating());
+            }
+        });
+        return result;
     }
 
 

@@ -1,7 +1,7 @@
 package com.netcracker.SpringConfigs;
 
-import com.netcracker.OracleDAO;
-import com.netcracker.OracleDAOImpl;
+import com.netcracker.Model.DAO.OracleDAO;
+import com.netcracker.Model.DAO.OracleDAOImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
