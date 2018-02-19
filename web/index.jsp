@@ -459,64 +459,81 @@
     </div>
 
     <div id="albumDiv">
-    <h1 id="albumTitle"></h1>
-    <img id="albumImage"><br/>
-    Performer: <label id="performer"></label><br/>
-    Year: <label id="albumYear"></label><br/>
-    Genre: <label id="albumGenre"></label><br/>
-    Description: <p id="albumDescription"></p>
-    Total rating: <label id="totalRating"></label><br/>
 
-    <div id="setRating" onchange="setRating()">
-        Your Rating:
-        <select id="ratingSelect">
-            <option></option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-        </select>
-    </div>
-
-    <div id="reviews">
-        <div id="submitReview">
-            <h3>Your Review</h3>
-            <textarea name="user-review" id="user-review" class="user-review-box"></textarea><br/>
-            <input type="button" value="Submit Review" onclick="createReview()">
-        </div>
-        <div id="yourReview">
-            <h3>Your Review</h3>
-            <div id="yourReviewInfo">
-                <p id="yourUsername"></p>
-                <p id="yourDate"></p>
-                <p id="yourRating"></p>
-                <p id="yourText"></p>
-            </div>
-        </div>
-        <div id="userReviews">
-            <h3>User Reviews</h3>
-            <div class="userReviewResults">
-
-            </div>
-        </div>
-    </div>
-    <div id="songsDiv">
-        <h1>Tracklist</h1>
-        <table id="songsTable">
+        <table>
             <tr>
-                <td></td>
-                <td>Title</td>
-                <td>Performer</td>
-                <td>Time</td>
+                <td class="albumTable">
+                    <div class="albumSidebar">
+                        <h1 id="albumTitle"></h1><br/>
+                        <img id="albumImage"><br/>
+                        Performer: <label id="performer"></label><br/>
+                        Year: <label id="albumYear"></label><br/>
+                        Genre: <label id="albumGenre"></label><br/>
+                        Description: <p id="albumDescription"></p>
+                        Total rating: <label id="totalRating"></label><br/>
+                        <div id="setRating" onchange="setRating()">
+                            Your Rating:
+                            <select id="ratingSelect">
+                                <option></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td class="albumTable">
+                    <div class="albumContentBar">
+                        <div id="songsDiv">
+                            <h1>Tracklist</h1>
+                            <table id="songsTable">
+                                <tr>
+                                    <td></td>
+                                    <td>Title</td>
+                                    <td>Performer</td>
+                                    <td>Time</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="reviews">
+                            <div id="submitReview">
+                                <h3>Your Review</h3>
+                                <textarea name="user-review" id="user-review" class="user-review-box"></textarea><br/>
+                                <input type="button" value="Submit Review" onclick="createReview()">
+                            </div>
+                            <div id="yourReview" class="review">
+                                <h3>Your Review</h3>
+                                <div id="yourReviewInfo">
+                                    <p id="yourUsername"></p>
+                                    <p id="yourDate"></p>
+                                    <p id="yourRating"></p>
+                                    <p id="yourText"></p>
+                                </div>
+                            </div>
+                            <h1>User Reviews</h1>
+                            <div id="userReviews">
+                                <h3>User Reviews</h3>
+                                <div class="userReviewResults">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
             </tr>
+
         </table>
-    </div>
+
+
+
+
 
 </div>
 

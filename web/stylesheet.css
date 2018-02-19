@@ -69,7 +69,7 @@ h2{
     padding: 20px;
     width: 900px;
     margin: 0 auto;
-    min-height: 800px;
+    min-height: 900px;
 }
 
 #login-form {
@@ -90,10 +90,23 @@ h2{
 #profileReq{font-size: 20px; display: none}
 .sidebar{
     float: left;
-    width: 230px;
+    width: 200px;
     background-color: #cbeae8;
     min-height: 550px;
+    margin-right: 15px;
 }
+
+.albumSidebar{
+    width: 270px;
+    height: inherit;
+    background-color: #cbeae8;
+    margin: 20px;
+}
+.albumContentBar{
+    width: 600px;
+    float: right;
+}
+.albumTable{ vertical-align:top;}
 
 .genreOptions{
     height: 200px;
@@ -106,6 +119,11 @@ h2{
     height: 100px;
     width: 450px;
 }
+.review{
+    background-color: #e4edec;
+    margin: auto;
+}
+.review .reviewUsername{background-color: #69c5ce; height: 20px}
 .genreOptions{overflow:auto; height:70px;}
 
 #resultTable {margin: 0 auto; width: 900px}
@@ -119,6 +137,17 @@ h2{
 #advancedSearchResultTable {margin: 0 auto; width: 670px;}
 #advancedSearchResultTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
 #advancedSearchResultTable tr:nth-child(even) {background: #fff; padding: 0px}
+
+#discographyTable {margin: 0 auto; width: 900px;}
+#discographyTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
+#discographyTable tr:nth-child(even) {background: #fff; padding: 0px}
+
+
+#songsTable{
+    width: 550px;
+}
+#songsTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
+#songsTable tr:nth-child(even) {background: #fff; padding: 0px}
 
 
 h1{

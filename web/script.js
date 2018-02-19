@@ -454,8 +454,9 @@ function signUpResponse(){
             document.getElementById("signUpMessage").style.display = 'inline';
         }
         else if(xmlHttp.status == 200){
-            document.getElementById("signUpMessage").innerHTML = 'Something went wrong';
+            document.getElementById("signUpMessage").innerHTML = 'User already exists.';
             document.getElementById("signUpMessage").style.display = 'inline';
+            document.getElementById("signUpMessage").style.color = 'red';
         }
     }else setTimeout('signUpResponse()', 1000);
 }
@@ -696,7 +697,7 @@ function getReviews(id) {
                     }
                     for (var i = 0; i < resp.length; i++){
                         var div = document.createElement('div');
-                        div.innerHTML = "<div class='review'><p>" + resp[i].username +"</p>\n" +
+                        div.innerHTML = "<div class='review'><p class='reviewUsername'>" + resp[i].username +"</p>\n" +
                             "<p>" + resp[i].date +"</p>\n" +
                             "<p>" + resp[i].rating +"/10</p>\n" +
                             "<p>" + resp[i].text +"</p>\n</div>";
