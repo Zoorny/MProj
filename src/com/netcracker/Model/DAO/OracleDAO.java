@@ -14,7 +14,7 @@ public interface OracleDAO {
     Album getAlbumById(int id);
     List<Album> getAlbums();
 
-    void createUser(User user);
+    boolean createUser(User user);
     User getUserByUsername(String username);
     User getUserById(int id);
 

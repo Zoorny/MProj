@@ -14,7 +14,7 @@ public interface Service {
     Album getAlbumById(int id);
     List<Album> getAlbums();
 
-    void createUser(User user);
+    boolean createUser(User user);
     User getUserByUsername(String username);
 
     String getAlbumRating(int albumId, String username);

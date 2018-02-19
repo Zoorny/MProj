@@ -41,8 +41,9 @@ public class ServiceImpl implements Service {
         return albums;
     }
 
-    public void createUser(User user) {
-        oracleDAO.createUser(user);
+    public boolean createUser(User user) {
+        if (oracleDAO.createUser(user)) return true;
+        else return false;
     }
 
     public User getUserByUsername(String username) {
@@ -151,11 +152,9 @@ public class ServiceImpl implements Service {
                 result.add(albums.get(i));
             }
         }
-        System.out.println(rated);
-        System.out.println(result);
+
         result.removeAll(rated);
-        System.out.println(result);
-        System.out.println(rated);
+
         result.sort(new Comparator<Album>() {
             public int compare(Album o1, Album o2) {
                 return (o2.getRating()-o1.getRating());

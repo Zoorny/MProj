@@ -95,6 +95,7 @@
 
     <div id="signUpDiv">
         <h1 id="signUpHeader">Sign Up</h1>
+        <p1 id="signUpMessage"></p1>
         <form id="sign-up-form">
             <table>
                 <tr><td>Username:</td><td><input type='text' id='username'></td></tr>

@@ -76,8 +76,12 @@ public class RESTController {
 
     @PostMapping(value = "/register",consumes = "application/json")
     public ResponseEntity<String> createUser(@RequestBody User user){
-        service.createUser(user);
-        return new ResponseEntity<String>("User created", HttpStatus.CREATED);
+        if(service.createUser(user)){
+            return new ResponseEntity<String>("User created", HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<String>("User already exists", HttpStatus.OK);
+        }
+
     }
 
     @GetMapping(value = "/recommendations/{username}",produces ="application/json" )

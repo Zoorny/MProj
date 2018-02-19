@@ -409,6 +409,8 @@ function signUpShow(showhide) {
     if(showhide== 'show'){
         hideElements();
         document.getElementById("signUpDiv").style.display = 'inline';
+        document.getElementById("sign-up-form").style.display = 'block';
+        document.getElementById("signUpMessage").style.display = 'none';
     }
 
     else {
@@ -424,7 +426,7 @@ function loginShow(showhide) {
     }
 }
 function signUp() {
-    if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
+    if((validation()) && (xmlHttp.readyState==0 || xmlHttp.readyState==4)){
 
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
@@ -435,12 +437,27 @@ function signUp() {
         xmlHttp.onreadystatechange  = signUpResponse();
         var data = JSON.stringify({"username": username, "password": password, "email": email});
         xmlHttp.send(data);
-    }else {
-        setTimeout('signUp()',1000);
     }
 
 }
 function signUpResponse(){
+    if (xmlHttp.readyState == 4) {
+        if (xmlHttp.status == 201) {
+            var username = document.getElementById("username").value;
+            document.getElementById("username").value = '';
+            document.getElementById("email").value = '';
+            document.getElementById("confirmEmail").value = '';
+            document.getElementById("password").value = '';
+            document.getElementById("confirmPassword").value = '';
+            document.getElementById("signUpMessage").innerHTML = 'Welcome ' + username + '!';
+            document.getElementById("sign-up-form").style.display = 'none';
+            document.getElementById("signUpMessage").style.display = 'inline';
+        }
+        else if(xmlHttp.status == 200){
+            document.getElementById("signUpMessage").innerHTML = 'Something went wrong';
+            document.getElementById("signUpMessage").style.display = 'inline';
+        }
+    }else setTimeout('signUpResponse()', 1000);
 }
 function auth_user() {
     if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
@@ -739,13 +756,67 @@ function profileServerResponse() {
 }
 
 //For later
-function validate() {
-    var username = document.getElementsByName("username").value;
-    var password = document.getElementsByName("password").value;
-    if(username!='' && password!='')
-        return true;
-    else
+function validation() {
+    var username = document.getElementById("username").value;
+    var email = document.getElementById("email").value;
+    var confirmEmail = document.getElementById("confirmEmail").value;
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+
+    if((username.length == 0) || (email.length==0) || (confirmEmail.length == 0) || (password.length == 0) || (confirmPassword.length==0)){
+        console.log('Empty Fields?');
+        alert('EMTYY!');
         return false;
+    }
+    if(allLetter(username)){
+        if(passwordValidation(password,3,10)){
+            if(validateEmail(email)){
+                if(email == confirmEmail && password == confirmPassword){
+                    return true;
+                }
+                else{
+                    alert('not equal confirm fields!!');
+                    return false;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+function allLetter(username) {
+    var letters = /^[A-Za-z]+$/;
+    if(username.match(letters))
+    {
+        return true;
+    }
+    else
+    {
+        alert('Username must have alphabet characters only');
+        return false;
+    }
+}
+function passwordValidation(pass,minP,maxP) {
+    var passLength = pass.length;
+    if (passLength == 0 ||passLength >= maxP || passLength < minP)
+    {
+        alert("Password should not be empty / length be between "+minP+" to "+maxP);
+        return false;
+    }
+    return true;
+}
+function validateEmail(uemail){
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if(uemail.match(mailformat))
+    {
+        return true;
+    }
+    else
+    {
+        alert("You have entered an invalid email address!");
+        return false;
+    }
 }
 
 function hideElements() {

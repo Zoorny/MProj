@@ -69,11 +69,17 @@ public class OracleDAOImpl implements OracleDAO {
         return album;
     }
 
-    public void createUser(User user) {
+    public boolean createUser(User user) {
         String sql = "insert into USERS (USERNAME, PASSWORD, EMAIL, ENABLED) values (?,?,?,?)";
         String sql2 = "insert into USER_ROLES (USERNAME, ROLE) values (?,?)";
-        jdbcTemplate.update(sql, new Object[]{user.getUsername(), user.getPassword(), user.getEmail(), "true"});
-        jdbcTemplate.update(sql2, new Object[]{user.getUsername(), "ROLE_USER"});
+        try{
+            jdbcTemplate.update(sql, new Object[]{user.getUsername(), user.getPassword(), user.getEmail(), "true"});
+            jdbcTemplate.update(sql2, new Object[]{user.getUsername(), "ROLE_USER"});
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
     }
 
     public User getUserByUsername(String username) {

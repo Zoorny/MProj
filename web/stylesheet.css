@@ -82,7 +82,7 @@ h2{
     margin: 0 auto;
     text-align: center;
 }
-#login-message{
+#login-message, #signUpMessage{
     display: none;
     font-size: 20px;
 }
