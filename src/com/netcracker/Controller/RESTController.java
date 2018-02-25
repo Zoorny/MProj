@@ -154,6 +154,18 @@ public class RESTController {
         return new ResponseEntity<List<Review>>(reviews, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/review/profile/{username}",produces ="application/json" )
+    public ResponseEntity<List<Review>> getReviewsByUsername(@PathVariable("username")String username){
+
+        List<Review> reviews = service.getReviewsByUsername(username);
+
+        if (reviews.isEmpty())
+            return new ResponseEntity<List<Review>>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<List<Review>>(reviews, HttpStatus.OK);
+    }
+
+
     @PostMapping(value = "/album/search")
     public ResponseEntity<List<Album>> selectAlbums(@RequestBody AlbumRequest request){
         return new ResponseEntity<List<Album>>(service.selectAlbums(request), HttpStatus.OK);

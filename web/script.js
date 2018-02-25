@@ -42,7 +42,6 @@ function homeScript() {
 
 
         xmlHttp.open("GET", "rest/album/", true);
-        //xmlHttp.setRequestHeader(requestHeaderAuth);
         xmlHttp.onreadystatechange  = homeServerResponse();
         xmlHttp.send(null);
     }else {
@@ -79,7 +78,6 @@ function homeServerResponse() {
 
                 var artist = resp[i].artistName;
                 var album = resp[i].title;
-
 
                 var refElement1 = document.createElement('a');
                 refElement1.setAttribute('class', 'tableRef');
@@ -329,9 +327,7 @@ function recommendationsScript() {
         var password = getCookie("password");
 
         xmlHttp.open("GET", "rest/recommendations/" + username, true);
-        //xmlHttp.setRequestHeader(requestHeaderAuth);
-        //var body = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
-        //xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
         xmlHttp.withCredentials = true;
         xmlHttp.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
         xmlHttp.onreadystatechange  = recommendationsResponse();
@@ -637,6 +633,7 @@ function createReview() {
         if (text == "") return;
         var username = getCookie("username");
         var albumId = document.getElementById("setRating").value;
+        var rating = document.getElementById("ratingSelect").value;
         console.log(albumId);
         var date = new Date();
 
@@ -650,7 +647,7 @@ function createReview() {
                 }
             }
         };
-        var data = JSON.stringify({"username": username,"albumId": albumId, "text": text, "date": date});
+        var data = JSON.stringify({"username": username,"albumId": albumId, "text": text, "date": date, "rating":rating});
         xmlHttp.send(data);
     }
 }
@@ -712,6 +709,38 @@ function getReviews(id) {
         xmlHttp.send(null);
     }
 }
+function getReviewsProfile(username) {
+    if (xmlHttp.readyState == 0 || xmlHttp.readyState == 4) {
+        xmlHttp.open("GET", "rest/review/profile/" + username, false);
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    var response = JSON.parse(xmlHttp.responseText);
+                    var reviewContainer = document.getElementById("profileReviews");
+                    if (isNaN(response.length)){
+                        var resp = [response];
+                    } else resp = response;
+                    while(reviewContainer.hasChildNodes())
+                    {
+                        reviewContainer.removeChild(reviewContainer.lastChild);
+                    }
+                    for (var i = 0; i < resp.length; i++){
+                        var div = document.createElement('div');
+                        div.innerHTML = "<div class='review'><p class='reviewUsername'>" + resp[i].albumName + " by " + resp[i].artistName +"</p>\n" +
+                            "<p>" + resp[i].date +"</p>\n" +
+                            "<p>" + resp[i].rating +"/10</p>\n" +
+                            "<p>" + resp[i].text +"</p>\n</div>";
+                        reviewContainer.appendChild(div);
+                    }
+                }
+                else if (xmlHttp.status == 204){
+                    document.getElementById("profileReviews").style.display = 'none';
+                }
+            }
+        };
+        xmlHttp.send(null);
+    }
+}
 
 function clearTable(table) {
     while(table.hasChildNodes() && table.rows.length >1)
@@ -751,6 +780,7 @@ function profileServerResponse() {
             var resp = JSON.parse(xmlHttp.responseText);
             document.getElementById("profile-name").innerHTML = resp.username;
             document.getElementById("profile-email").innerHTML = resp.email;
+            getReviewsProfile(resp.username);
 
         }
     }else setTimeout('profileServerResponse()',1000);

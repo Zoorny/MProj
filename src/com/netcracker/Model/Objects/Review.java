@@ -12,6 +12,7 @@ public class Review {
     private String albumName;
     private String rating;
     private int reviewId;
+    private String artistName;
 
     public String getUsername() {
         return username;
@@ -77,14 +78,11 @@ public class Review {
         this.reviewId = reviewId;
     }
 
-    @Override
-    public String toString() {
-        return "Review{" +
-                "username='" + username + '\'' +
-                ", text='" + text + '\'' +
-                ", date=" + date +
-                ", userId=" + userId +
-                ", albumId=" + albumId +
-                '}';
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
     }
 }

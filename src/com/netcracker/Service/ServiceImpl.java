@@ -104,6 +104,11 @@ public class ServiceImpl implements Service {
         return reviews;
     }
 
+    @Override
+    public List<Review> getReviewsByUsername(String username) {
+        return oracleDAO.getReviewsByUsername(username);
+    }
+
     public List<Album> selectAlbums(AlbumRequest request) {
         if (request.getMinRating() == 0) request.setMinRating(0);
         if (request.getMaxRating() == 0) request.setMaxRating(10);

@@ -21,8 +21,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-/*	@Autowired
-	CustomAccessDeniedHandler customAccessDeniedHandler;*/
 
 	@Autowired
 	DataSource dataSource;
@@ -39,12 +37,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
 	private static String REALM="REALM";
-	
-/*	@Autowired
-	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("bill").password("abc123").roles("ADMIN", "USER");
-		auth.inMemoryAuthentication().withUser("tom").password("abc123").roles("USER");
-	}*/
 
 	@Autowired
 	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
@@ -66,12 +58,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll().successHandler(customAuthenticationSuccessHandler).failureHandler(customAuthenticationFailureHandler)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().logout().logoutSuccessHandler(customLogoutSuccessHandler);
-				//.and().exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
-
  	}
 
 
-
+//.and().exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
  	//.failureUrl("/failure")
 	//.loginPage("/login.html") .failureUrl("/login-failure.html") .usernameParameter("username").passwordParameter("password")
 /*	@Bean

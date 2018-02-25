@@ -25,6 +25,8 @@ public interface Service {
     void createReview(Review review);
     Review getAlbumReview(int albumId, String username);
     List<Review> getReviews(int albumId);
+    List<Review> getReviewsByUsername(String username);
+
 
     List<Album> selectAlbums(AlbumRequest request);
 

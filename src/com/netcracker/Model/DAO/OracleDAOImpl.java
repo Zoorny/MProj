@@ -111,7 +111,7 @@ public class OracleDAOImpl implements OracleDAO {
                 "ON (r1.USERNAME = r2.USERNAME AND r1.ALBUM_ID = r2.ALBUM_ID) " +
                 "WHEN MATCHED THEN UPDATE SET r1.ALBUM_RATING = :rating " +
                 "WHEN NOT MATCHED THEN INSERT (ALBUM_ID, USERNAME, ALBUM_RATING) values (:albumId,:username,:rating)";
-        //String sql = "insert into ALBUM_RATINGS (ALBUM_ID, USERNAME, ALBUM_RATING) values (?,?,?)";
+
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("albumId", albumId);
         namedParams.put("username", username);
@@ -136,8 +136,8 @@ public class OracleDAOImpl implements OracleDAO {
     }
 
     public void createReview(Review review){
-        String sql = "insert into ALBUM_REVIEWS (USER_ID, ALBUM_ID, REVIEW_TEXT, REVIEW_DATE) values (?,?,?,?)";
-        jdbcTemplate.update(sql, new Object[]{review.getUserId(), review.getAlbumId(), review.getText(), review.getDate()});
+        String sql = "insert into ALBUM_REVIEWS (USER_ID, ALBUM_ID, REVIEW_TEXT, REVIEW_DATE, REVIEW_RATING) values (?,?,?,?,?)";
+        jdbcTemplate.update(sql, new Object[]{review.getUserId(), review.getAlbumId(), review.getText(), review.getDate(), review.getRating()});
     }
 
     public Review getAlbumReview(int albumId, int userId) {
@@ -155,6 +155,15 @@ public class OracleDAOImpl implements OracleDAO {
         Map<String, Object> namedParams = new HashMap<String, Object>();
         namedParams.put("albumId", albumId);
         List<Review> reviews =  namedParameterJdbcTemplate.query(sql, namedParams, new ReviewMapper());
+        return reviews;
+    }
+
+    public List<Review> getReviewsByUsername(String username) {
+        String sql = "SELECT * FROM ALBUM_REVIEWS, USERS, ALBUMS, ARTISTS WHERE USERS.USERNAME = :username AND USERS.USER_ID = ALBUM_REVIEWS.USER_ID" +
+                " AND ALBUMS.ALBUM_ID = ALBUM_REVIEWS.ALBUM_ID AND ARTISTS.ARTIST_ID = ALBUMS.ARTIST_ID";
+        Map<String, Object> namedParams = new HashMap<String, Object>();
+        namedParams.put("username", username);
+        List<Review> reviews =  namedParameterJdbcTemplate.query(sql, namedParams, new ProfileReviewMapper());
         return reviews;
     }
 
@@ -217,13 +226,6 @@ public class OracleDAOImpl implements OracleDAO {
         String sql = "SELECT ALBUMS.album_id,ARTISTS.artist_name,ALBUMS.album_title,ALBUMS.album_year,ALBUMS.album_desc,albums.artist_id, albums.album_genre" +
                 " FROM albums, artists, ALBUM_RATINGS WHERE albums.artist_id = artists.artist_id AND ALBUM_RATINGS.USERNAME = :username AND ALBUMS.ALBUM_ID=ALBUM_RATINGS.ALBUM_ID";
         return namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper());
-/*        String sql = "SELECT * FROM ARTISTS";
-
-
-        Map<String, Object> namedParams = new HashMap<String, Object>();
-        namedParams.put("username", username);
-        List<Album> albums =  namedParameterJdbcTemplate.query(sql, namedParams, new AlbumMapper());
-        return albums;*/
     }
 
 

@@ -26,6 +26,7 @@ public interface OracleDAO {
     void createReview(Review review);
     Review getAlbumReview(int albumId, int userId);
     List<Review> getReviews(int albumId);
+    List<Review> getReviewsByUsername(String username);
 
     List<Album> selectAlbums(AlbumRequest request);
 

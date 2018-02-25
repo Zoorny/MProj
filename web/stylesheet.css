@@ -100,7 +100,7 @@ h2{
     width: 270px;
     height: inherit;
     background-color: #cbeae8;
-    margin: 20px;
+    margin: 10px;
 }
 .albumContentBar{
     width: 600px;
@@ -146,13 +146,16 @@ h2{
 #songsTable{
     width: 550px;
 }
-#songsTable tr:nth-child(odd) {background: #69c5ce; border-color:#69c5ce; padding: 0px }
+#songsTable tr:nth-child(odd) {background: #b1dde0; border-color:#69c5ce; padding: 0px }
 #songsTable tr:nth-child(even) {background: #fff; padding: 0px}
 
 
 h1{
     text-align: center;
 }
+
+.profileInfo{display: inline-block;  margin-top: auto}
+.profileImage{display: inline-block;}
 
 #loginDiv{display: none}
 #homeDiv{display: none}

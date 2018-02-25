@@ -73,8 +73,18 @@
         <h1>User profile</h1>
         <p id="profileReq">Log in to see profile.</p>
         <div id="profileContent">
-            profile-name: <h2 id="profile-name"></h2><br/>
-            profile-email: <h2 id="profile-email"></h2>
+            <div class="profileImage">
+                <img src="images/noavatar.png">
+            </div>
+            <div class="profileInfo">
+                <h2 id="profile-name"></h2>
+                <h3 id="profile-email"></h3>
+            </div>
+
+        </div>
+        <div id="profileReviews">
+            <h1>Your Reviews</h1>
+
         </div>
 
 
