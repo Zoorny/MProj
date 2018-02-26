@@ -158,8 +158,7 @@ function artistServerResponse() {
                 refElement3.setAttribute('onclick', 'getAlbum(this.value)');
                 tdelem3.appendChild(refElement3);
 
-                tdelem4.innerHTML = resp.rating;
-
+                tdelem4.innerHTML = resp.albums[i].rating;
 
                 trelem.appendChild(tdelem1);
                 trelem.appendChild(tdelem2);

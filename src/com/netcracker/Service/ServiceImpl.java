@@ -17,7 +17,13 @@ public class ServiceImpl implements Service {
     }
 
     public Artist getArtistById(int id) {
-        return oracleDAO.getArtistById(id);
+        Artist artist = oracleDAO.getArtistById(id);
+        List<Album> albums = artist.getAlbums();
+        for(int i = 0; i< albums.size(); i++ ){
+            int rating = oracleDAO.getTotalAlbumRating(albums.get(i).getId());
+            albums.get(i).setRating(rating);
+        }
+        return artist;
     }
 
     public List<Artist> getAllArtists() {
